@@ -31,6 +31,15 @@ if ! aws sts get-caller-identity &> /dev/null; then
 fi
 echo -e "${GREEN}AWS credentials verified.${NC}"
 
+# Extract and export session credentials for Terraform
+if aws configure export-credentials &> /dev/null; then
+  echo -e "${CYAN}Exporting session credentials for Terraform...${NC}"
+  CREDS=$(aws configure export-credentials)
+  export AWS_ACCESS_KEY_ID=$(echo "$CREDS" | jq -r '.AccessKeyId')
+  export AWS_SECRET_ACCESS_KEY=$(echo "$CREDS" | jq -r '.SecretAccessKey')
+  export AWS_SESSION_TOKEN=$(echo "$CREDS" | jq -r '.SessionToken')
+fi
+
 # 2. Terraform Infrastructure Provisioning
 echo -e "${CYAN}2. Provisioning AWS Infrastructure via Terraform...${NC}"
 cd /Users/saurabhyadav/Desktop/QuantumDefence/terraform

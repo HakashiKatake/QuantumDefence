@@ -21,6 +21,15 @@ for CMD in "${PREREQS[@]}"; do
   fi
 done
 
+# Extract and export session credentials for Terraform
+if aws configure export-credentials &> /dev/null; then
+  echo -e "${CYAN}Exporting session credentials for Terraform...${NC}"
+  CREDS=$(aws configure export-credentials)
+  export AWS_ACCESS_KEY_ID=$(echo "$CREDS" | jq -r '.AccessKeyId')
+  export AWS_SECRET_ACCESS_KEY=$(echo "$CREDS" | jq -r '.SecretAccessKey')
+  export AWS_SESSION_TOKEN=$(echo "$CREDS" | jq -r '.SessionToken')
+fi
+
 # 2. Kubernetes Resource Teardown
 echo -e "${CYAN}1. Deleting Kubernetes namespace and releasing cloud Load Balancers...${NC}"
 # Deleting namespace first terminates all Load Balancer services created by ingress/nginx controller,
