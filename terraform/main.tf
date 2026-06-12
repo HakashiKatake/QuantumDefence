@@ -35,11 +35,11 @@ module "eks" {
 
   eks_managed_node_groups = {
     c2_nodes = {
-      min_size     = 2
-      max_size     = 5
-      desired_size = 3
+      min_size     = 1
+      max_size     = 3
+      desired_size = 2
 
-      instance_types = ["t3.medium"]
+      instance_types = ["t2.micro"]
       capacity_type  = "ON_DEMAND"
     }
   }
@@ -55,7 +55,7 @@ resource "aws_db_instance" "postgres" {
   identifier           = "${var.project_name}-db"
   allocated_storage    = 20
   engine               = "postgres"
-  engine_version       = "18.0"
+  engine_version       = "16.3"
   instance_class       = "db.t3.micro"
   db_name              = "qdefense"
   username             = var.db_username
@@ -94,7 +94,7 @@ resource "aws_security_group" "db_sg" {
 # EC2 Instance for Jenkins Server
 resource "aws_instance" "jenkins" {
   ami           = "ami-04b70fa74e45c3917" # Standard Ubuntu LTS
-  instance_type = "t3.medium"
+  instance_type = "t2.micro"
   subnet_id     = module.vpc.public_subnets[0]
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
