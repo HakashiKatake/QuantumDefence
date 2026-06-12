@@ -39,7 +39,7 @@ module "eks" {
       max_size     = 3
       desired_size = 2
 
-      instance_types = ["t2.micro"]
+      instance_types = ["t3.small"]
       capacity_type  = "ON_DEMAND"
     }
   }
@@ -94,7 +94,7 @@ resource "aws_security_group" "db_sg" {
 # EC2 Instance for Jenkins Server
 resource "aws_instance" "jenkins" {
   ami           = "ami-04b70fa74e45c3917" # Standard Ubuntu LTS
-  instance_type = "t2.micro"
+  instance_type = "t3.small"
   subnet_id     = module.vpc.public_subnets[0]
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
