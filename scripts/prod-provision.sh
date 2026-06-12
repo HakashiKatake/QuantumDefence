@@ -1,6 +1,9 @@
 #!/bin/bash
 set -e
 
+# Add local bin to PATH for local Terraform binary
+export PATH="/Users/saurabhyadav/Desktop/QuantumDefence/bin:$PATH"
+
 # Terminal Colors
 RED='\033[0;31m'
 GREEN='\033[0;32m'
