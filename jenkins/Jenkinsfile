@@ -2,7 +2,7 @@ pipeline {
     agent any
 
     environment {
-        AWS_ACCOUNT_ID = '123456789012'
+        AWS_ACCOUNT_ID = '032667094119'
         AWS_DEFAULT_REGION = 'us-east-1'
         ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
         PROJECT_NAME = 'quantum-defense'
