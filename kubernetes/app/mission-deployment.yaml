@@ -1,0 +1,67 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: mission-service
+  namespace: quantum-defense
+  labels:
+    app: mission-service
+spec:
+  replicas: 2
+  selector:
+    matchLabels:
+      app: mission-service
+  template:
+    metadata:
+      labels:
+        app: mission-service
+    spec:
+      containers:
+      - name: mission-service
+        image: quantum-defense/mission-service:latest
+        imagePullPolicy: IfNotPresent
+        ports:
+        - containerPort: 4004
+        envFrom:
+        - configMapRef:
+            name: c2-config
+        env:
+        - name: PORT
+          value: "4004"
+        - name: DATABASE_URL
+          value: "postgresql://postgres:postgrespassword@db-service.quantum-defense.svc.cluster.local:5432/qdefense?schema=public"
+        - name: JWT_SECRET
+          value: "c2-top-secret-signing-key"
+        resources:
+          limits:
+            cpu: "500m"
+            memory: "512Mi"
+          requests:
+            cpu: "250m"
+            memory: "256Mi"
+        livenessProbe:
+          httpGet:
+            path: /api/missions/health
+            port: 4004
+          initialDelaySeconds: 15
+          periodSeconds: 20
+        readinessProbe:
+          httpGet:
+            path: /api/missions/health
+            port: 4004
+          initialDelaySeconds: 5
+          periodSeconds: 10
+---
+apiVersion: v1
+kind: Service
+metadata:
+  name: mission-service
+  namespace: quantum-defense
+  labels:
+    app: mission-service
+spec:
+  ports:
+  - port: 4004
+    targetPort: 4004
+    protocol: TCP
+  selector:
+    app: mission-service

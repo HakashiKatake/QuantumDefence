@@ -1,0 +1,31 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Threat {
+  id          Int      @id @default(autoincrement())
+  name        String
+  type        String   // E.g., Fighter, Missile, Submarine, Malware, Jammer
+  severity    String   // Low, Medium, High, Critical
+  domainId    Int
+  status      String   // Detected, Tracked, Neutralized, Lost
+  lat         Float
+  lng         Float
+  description String
+  detectedAt  DateTime @default(now())
+}
+
+model Alert {
+  id           Int      @id @default(autoincrement())
+  type         String   // E.g., Intrusion, Launch, CyberAttack, CommsLoss
+  severity     String   // Low, Medium, High, Critical
+  message      String
+  domainId     Int
+  acknowledged Boolean  @default(false)
+  createdAt    DateTime @default(now())
+}

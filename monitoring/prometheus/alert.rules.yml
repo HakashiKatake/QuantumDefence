@@ -1,0 +1,20 @@
+groups:
+  - name: qdefense-alerts
+    rules:
+      - alert: InstanceDown
+        expr: up == 0
+        for: 30s
+        labels:
+          severity: critical
+        annotations:
+          summary: "C2 Service Instance {{ $labels.instance }} is DOWN"
+          description: "A replica container for service {{ $labels.job }} has been unresponsive for more than 30 seconds."
+
+      - alert: HighHttpErrorRate
+        expr: rate(auth_service_http_requests_total{status=~"5.."}[1m]) > 0.5
+        for: 1m
+        labels:
+          severity: warning
+        annotations:
+          summary: "High HTTP 5xx Error Rate detected on Auth Service"
+          description: "Auth Service error rate is {{ $value }} errors per second, indicating session verification degradation."

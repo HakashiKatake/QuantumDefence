@@ -1,0 +1,141 @@
+pipeline {
+    agent any
+
+    environment {
+        AWS_ACCOUNT_ID = '123456789012'
+        AWS_DEFAULT_REGION = 'us-east-1'
+        ECR_REGISTRY = "${AWS_ACCOUNT_ID}.dkr.ecr.${AWS_DEFAULT_REGION}.amazonaws.com"
+        PROJECT_NAME = 'quantum-defense'
+        KUBECONFIG_CREDENTIAL_ID = 'eks-kubeconfig'
+    }
+
+    stages {
+        stage('Checkout Source') {
+            steps {
+                git branch: 'main', url: 'https://github.com/ITM-DevOps/QuantumDefence.git'
+            }
+        }
+
+        stage('Static Analysis & Test') {
+            parallel {
+                stage('Auth Service Lint') {
+                    steps {
+                        dir('services/auth-service') {
+                            sh 'npm ci && npm run lint || true'
+                        }
+                    }
+                }
+                stage('Command Service Lint') {
+                    steps {
+                        dir('services/command-service') {
+                            sh 'npm ci && npm run lint || true'
+                        }
+                    }
+                }
+                stage('Threat Service Lint') {
+                    steps {
+                        dir('services/threat-service') {
+                            sh 'npm ci && npm run lint || true'
+                        }
+                    }
+                }
+                stage('Mission Service Lint') {
+                    steps {
+                        dir('services/mission-service') {
+                            sh 'npm ci && npm run lint || true'
+                        }
+                    }
+                }
+                stage('Frontend Lint') {
+                    steps {
+                        dir('frontend') {
+                            sh 'npm ci && npm run lint || true'
+                        }
+                    }
+                }
+            }
+        }
+
+        stage('Docker Compilation') {
+            steps {
+                script {
+                    echo "Building Docker container images..."
+                    sh 'docker build -t ${ECR_REGISTRY}/${PROJECT_NAME}/auth-service:latest services/auth-service'
+                    sh 'docker build -t ${ECR_REGISTRY}/${PROJECT_NAME}/command-service:latest services/command-service'
+                    sh 'docker build -t ${ECR_REGISTRY}/${PROJECT_NAME}/threat-service:latest services/threat-service'
+                    sh 'docker build -t ${ECR_REGISTRY}/${PROJECT_NAME}/mission-service:latest services/mission-service'
+                    sh 'docker build -t ${ECR_REGISTRY}/${PROJECT_NAME}/frontend:latest frontend'
+                }
+            }
+        }
+
+        stage('Registry Upload') {
+            steps {
+                script {
+                    echo "Pushing images to AWS ECR..."
+                    withCredentials([[
+                        $class: 'AmazonWebServicesCredentialsBinding',
+                        credentialsId: 'aws-ecr-credentials'
+                    ]]) {
+                        sh "aws ecr get-login-password --region ${AWS_DEFAULT_REGION} | docker login --username AWS --password-stdin ${ECR_REGISTRY}"
+                        sh 'docker push ${ECR_REGISTRY}/${PROJECT_NAME}/auth-service:latest'
+                        sh 'docker push ${ECR_REGISTRY}/${PROJECT_NAME}/command-service:latest'
+                        sh 'docker push ${ECR_REGISTRY}/${PROJECT_NAME}/threat-service:latest'
+                        sh 'docker push ${ECR_REGISTRY}/${PROJECT_NAME}/mission-service:latest'
+                        sh 'docker push ${ECR_REGISTRY}/${PROJECT_NAME}/frontend:latest'
+                    }
+                }
+            }
+        }
+
+        stage('Kubernetes Orchestration') {
+            steps {
+                script {
+                    echo "Rolling out deployments to Amazon EKS..."
+                    withKubeConfig([credentialsId: "${KUBECONFIG_CREDENTIAL_ID}"]) {
+                        sh 'kubectl apply -f kubernetes/namespace.yaml'
+                        sh 'kubectl apply -f kubernetes/app/configmap.yaml'
+                        sh 'kubectl apply -f kubernetes/app/auth-deployment.yaml'
+                        sh 'kubectl apply -f kubernetes/app/command-deployment.yaml'
+                        sh 'kubectl apply -f kubernetes/app/threat-deployment.yaml'
+                        sh 'kubectl apply -f kubernetes/app/mission-deployment.yaml'
+                        sh 'kubectl apply -f kubernetes/app/frontend-deployment.yaml'
+                        sh 'kubectl apply -f kubernetes/app/ingress.yaml'
+                        sh 'kubectl apply -f kubernetes/app/hpa.yaml'
+                        
+                        // Force rollouts to reload the newly pushed images
+                        sh 'kubectl rollout restart deployment/auth-service -n quantum-defense'
+                        sh 'kubectl rollout restart deployment/command-service -n quantum-defense'
+                        sh 'kubectl rollout restart deployment/threat-service -n quantum-defense'
+                        sh 'kubectl rollout restart deployment/mission-service -n quantum-defense'
+                        sh 'kubectl rollout restart deployment/frontend -n quantum-defense'
+                    }
+                }
+            }
+        }
+
+        stage('Health Validation') {
+            steps {
+                script {
+                    echo "Verifying service rollouts status..."
+                    withKubeConfig([credentialsId: "${KUBECONFIG_CREDENTIAL_ID}"]) {
+                        sh 'kubectl rollout status deployment/auth-service -n quantum-defense --timeout=90s'
+                        sh 'kubectl rollout status deployment/command-service -n quantum-defense --timeout=90s'
+                        sh 'kubectl rollout status deployment/threat-service -n quantum-defense --timeout=90s'
+                        sh 'kubectl rollout status deployment/mission-service -n quantum-defense --timeout=90s'
+                        sh 'kubectl rollout status deployment/frontend -n quantum-defense --timeout=90s'
+                    }
+                }
+            }
+        }
+    }
+
+    post {
+        success {
+            echo "CI/CD execution completed successfully!"
+        }
+        failure {
+            echo "CI/CD build failed. Please review execution logs."
+        }
+    }
+}

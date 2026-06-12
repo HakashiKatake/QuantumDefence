@@ -1,0 +1,28 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Mission {
+  id           Int           @id @default(autoincrement())
+  name         String
+  domainId     Int
+  status       String        // Planning, Active, Completed, Failed
+  priority     String        // Low, Medium, High, Critical
+  objective    String
+  startDate    DateTime      @default(now())
+  endDate      DateTime?
+  units        MissionUnit[]
+}
+
+model MissionUnit {
+  id        Int     @id @default(autoincrement())
+  missionId Int
+  unitId    Int
+  role      String  // Support, Primary Attack, Defense, Recon
+  mission   Mission @relation(fields: [missionId], references: [id], onDelete: Cascade)
+}

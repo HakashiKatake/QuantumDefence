@@ -1,0 +1,106 @@
+@import "tailwindcss";
+
+@theme {
+  --color-bg-main: #0a1628;
+  --color-bg-card: #1a2744;
+  --color-bg-input: #101c33;
+  --color-border-cyan: rgba(0, 212, 255, 0.15);
+  --color-border-cyan-hover: rgba(0, 212, 255, 0.4);
+  
+  --color-accent-cyan: #00d4ff;
+  --color-accent-green: #00ff88;
+  --color-accent-amber: #ffaa00;
+  --color-accent-red: #ff3366;
+  
+  --color-domain-land: #8b9d77;
+  --color-domain-air: #4ea8de;
+  --color-domain-naval: #1d3557;
+  --color-domain-cyber: #00f5d4;
+  --color-domain-space: #7209b7;
+
+  --font-sans: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, sans-serif;
+  --font-mono: 'JetBrains Mono', Courier, monospace;
+}
+
+/* Custom base overrides */
+body {
+  margin: 0;
+  background-color: var(--color-bg-main);
+  color: #ffffff;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Custom Scrollbars */
+::-webkit-scrollbar {
+  width: 6px;
+  height: 6px;
+}
+::-webkit-scrollbar-track {
+  background: var(--color-bg-main);
+}
+::-webkit-scrollbar-thumb {
+  background: #24355a;
+  border-radius: 3px;
+}
+::-webkit-scrollbar-thumb:hover {
+  background: var(--color-accent-cyan);
+}
+
+/* Leaflet Dark Mode Customizations */
+.leaflet-container {
+  background: var(--color-bg-main) !important;
+}
+.leaflet-bar {
+  border: 1px solid var(--color-accent-cyan) !important;
+  background-color: var(--color-bg-card) !important;
+}
+.leaflet-bar a {
+  background-color: var(--color-bg-card) !important;
+  color: var(--color-accent-cyan) !important;
+  border-bottom: 1px solid var(--color-border-cyan) !important;
+}
+.leaflet-bar a:hover {
+  background-color: #24355a !important;
+  color: #ffffff !important;
+}
+
+/* Radar Pulse Animation */
+@keyframes radar-pulse {
+  0% {
+    transform: scale(0.95);
+    opacity: 0.8;
+  }
+  50% {
+    opacity: 0.4;
+  }
+  100% {
+    transform: scale(1.8);
+    opacity: 0;
+  }
+}
+
+.marker-pulse {
+  position: relative;
+}
+.marker-pulse::after {
+  content: '';
+  position: absolute;
+  top: -4px;
+  left: -4px;
+  width: 24px;
+  height: 24px;
+  border: 2px solid var(--color-accent-red);
+  border-radius: 50%;
+  animation: radar-pulse 1.8s infinite ease-out;
+  pointer-events: none;
+}
+
+@keyframes blink-border {
+  0%, 100% { border-color: var(--color-accent-red); }
+  50% { border-color: transparent; }
+}
+
+.blink-critical {
+  animation: blink-border 1.5s infinite;
+}

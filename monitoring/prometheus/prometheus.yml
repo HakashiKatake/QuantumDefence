@@ -1,0 +1,31 @@
+global:
+  scrape_interval: 10s
+  evaluation_interval: 10s
+
+rule_files:
+  - "alert.rules.yml"
+
+scrape_configs:
+  - job_name: 'prometheus'
+    static_configs:
+      - targets: ['localhost:9090']
+
+  - job_name: 'qdefense-auth-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['auth-service:4001']
+
+  - job_name: 'qdefense-command-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['command-service:4002']
+
+  - job_name: 'qdefense-threat-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['threat-service:4003']
+
+  - job_name: 'qdefense-mission-service'
+    metrics_path: '/metrics'
+    static_configs:
+      - targets: ['mission-service:4004']

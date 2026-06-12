@@ -1,0 +1,9 @@
+apiVersion: v1
+kind: ConfigMap
+metadata:
+  name: c2-config
+  namespace: quantum-defense
+data:
+  NODE_ENV: "production"
+  VAULT_ADDR: "http://vault.quantum-defense.svc.cluster.local:8200"
+  LOG_LEVEL: "info"

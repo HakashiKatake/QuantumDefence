@@ -1,0 +1,84 @@
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: c2-ingress
+  namespace: quantum-defense
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+    nginx.ingress.kubernetes.io/use-regex: "true"
+    nginx.ingress.kubernetes.io/websocket-services: "command-service"
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /api/auth(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: auth-service
+            port:
+              number: 4001
+      - path: /api/domains(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: command-service
+            port:
+              number: 4002
+      - path: /api/assets(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: command-service
+            port:
+              number: 4002
+      - path: /api/units(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: command-service
+            port:
+              number: 4002
+      - path: /api/dashboard(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: command-service
+            port:
+              number: 4002
+      - path: /api/threats(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: threat-service
+            port:
+              number: 4003
+      - path: /api/alerts(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: threat-service
+            port:
+              number: 4003
+      - path: /api/missions(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: mission-service
+            port:
+              number: 4004
+      - path: /socket.io(/|$)(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: command-service
+            port:
+              number: 4002
+      - path: /?(.*)
+        pathType: ImplementationSpecific
+        backend:
+          service:
+            name: frontend
+            port:
+              number: 80

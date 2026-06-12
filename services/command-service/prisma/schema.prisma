@@ -1,0 +1,59 @@
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model Domain {
+  id            Int            @id @default(autoincrement())
+  name          String         @unique // Land, Air, Naval, Cyber, Space
+  status        String         // Nominal, Warning, Critical
+  description   String
+  units         MilitaryUnit[]
+  metrics       DomainMetric[]
+  assets        Asset[]
+}
+
+model MilitaryUnit {
+  id        Int      @id @default(autoincrement())
+  name      String
+  callsign  String   @unique
+  domainId  Int
+  type      String   // Infantry, Armor, FighterSquadron, Fleet, CyberUnit, SpaceControl
+  status    String   // Operational, Standby, Deployed, Maintenance
+  strength  Int      // 0 to 100 percentage
+  lat       Float
+  lng       Float
+  domain    Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
+  assets    Asset[]
+}
+
+model Asset {
+  id        Int          @id @default(autoincrement())
+  name      String
+  type      String       // Tank, Jet, Destroyer, Server, Satellite
+  unitId    Int
+  domainId  Int
+  status    String       // Active, Standby, Damage, Offline
+  lat       Float
+  lng       Float
+  speed     Float        // Speed in knots/kmh/mach
+  heading   Float        // Degrees 0-359
+  fuel      Float        // 0 to 100 percentage
+  ammo      Float        // 0 to 100 percentage
+  unit      MilitaryUnit @relation(fields: [unitId], references: [id], onDelete: Cascade)
+  domain    Domain       @relation(fields: [domainId], references: [id], onDelete: Cascade)
+}
+
+model DomainMetric {
+  id          Int      @id @default(autoincrement())
+  domainId    Int
+  readiness   Float    // 0 to 100 percentage
+  threatLevel Float    // 0 to 100 percentage
+  activeAssets Int
+  timestamp   DateTime @default(now())
+  domain      Domain   @relation(fields: [domainId], references: [id], onDelete: Cascade)
+}
