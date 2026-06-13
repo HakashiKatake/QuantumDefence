@@ -80,6 +80,21 @@ helm upgrade --install vault hashicorp/vault \
 echo -e "Waiting for Vault pod to be ready..."
 kubectl wait --for=condition=Ready pod/vault-0 -n quantum-defense --timeout=180s
 
+# Deploy Nginx Ingress Controller via Helm
+echo -e "${CYAN}4.1. Deploying Nginx Ingress Controller...${NC}"
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm repo update
+helm upgrade --install ingress-nginx ingress-nginx/ingress-nginx \
+  -n ingress-nginx \
+  --create-namespace \
+  --set controller.service.annotations."service\.beta\.kubernetes\.io/aws-load-balancer-type"="nlb"
+
+echo -e "Waiting for Nginx Ingress Controller to be ready..."
+kubectl wait --namespace ingress-nginx \
+  --for=condition=ready pod \
+  --selector=app.kubernetes.io/component=controller \
+  --timeout=180s
+
 # Populate Vault Secrets with RDS and JWT values
 echo -e "Populating Vault secrets in Kubernetes..."
 kubectl exec vault-0 -n quantum-defense -- env VAULT_TOKEN="root-dev-token" vault kv put secret/quantum-defense/postgres \

@@ -72,3 +72,8 @@ services/*/.env
 # OS metadata
 .DS_Store
 Thumbs.db
+
+# Binaries and local terraform state
+bin/
+terraform/.terraform/
+terraform/*.tfstate*

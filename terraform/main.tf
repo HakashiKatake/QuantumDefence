@@ -99,6 +99,7 @@ resource "aws_instance" "jenkins" {
   ami           = "ami-04b70fa74e45c3917" # Standard Ubuntu LTS
   instance_type = "t3.small"
   subnet_id     = module.vpc.public_subnets[0]
+  associate_public_ip_address = true
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
 
   user_data = <<-EOF

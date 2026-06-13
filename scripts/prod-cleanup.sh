@@ -41,6 +41,8 @@ echo -e "${GREEN}Kubernetes services and namespace deleted.${NC}"
 # 3. Helm Releases Teardown
 echo -e "${CYAN}2. Uninstalling Helm releases...${NC}"
 helm uninstall vault -n quantum-defense &>/dev/null || true
+helm uninstall ingress-nginx -n ingress-nginx &>/dev/null || true
+kubectl delete namespace ingress-nginx --ignore-not-found --timeout=120s || true
 echo -e "${GREEN}Helm releases uninstalled.${NC}"
 
 # 4. AWS S3 Bucket Purge
