@@ -46,9 +46,18 @@ if ! aws sts get-caller-identity &> /dev/null; then
 fi
 echo -e "${GREEN}AWS credentials verified.${NC}"
 
-# Function to refresh AWS session credentials (no-op to prevent overriding permanent credentials)
+# Function to refresh AWS session credentials
 refresh_aws_credentials() {
-  echo -e "${CYAN}Using active AWS credentials provider chain...${NC}"
+  unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
+  if aws configure export-credentials &> /dev/null; then
+    echo -e "${CYAN}Exporting session credentials for Terraform...${NC}"
+    CREDS=$(aws configure export-credentials)
+    export AWS_ACCESS_KEY_ID=$(echo "$CREDS" | jq -r '.AccessKeyId')
+    export AWS_SECRET_ACCESS_KEY=$(echo "$CREDS" | jq -r '.SecretAccessKey')
+    export AWS_SESSION_TOKEN=$(echo "$CREDS" | jq -r '.SessionToken')
+  else
+    echo -e "${CYAN}Using active AWS credentials provider chain...${NC}"
+  fi
 }
 
 # Initial credentials export
@@ -313,7 +322,12 @@ helm install monitoring prometheus-community/kube-prometheus-stack \
   --set prometheusOperator.tls.enabled=false \
   --timeout 5m
 
-echo -e "Waiting for Grafana pod to be ready..."
+echo -e "Waiting for Grafana pod to be created in API..."
+until kubectl get pods -l app.kubernetes.io/name=grafana -n monitoring 2>/dev/null | grep -q "monitoring-grafana"; do
+  echo -e "  Grafana pod not registered yet, retrying in 5s..."
+  sleep 5
+done
+echo -e "Grafana pod registered. Waiting for it to be ready..."
 kubectl wait --for=condition=Ready pod \
   --selector=app.kubernetes.io/name=grafana \
   -n monitoring \

@@ -5,78 +5,77 @@ metadata:
   namespace: quantum-defense
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
-    nginx.ingress.kubernetes.io/use-regex: "true"
     nginx.ingress.kubernetes.io/websocket-services: "command-service"
 spec:
   ingressClassName: nginx
   rules:
   - http:
       paths:
-      - path: /api/auth(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /api/auth
+        pathType: Prefix
         backend:
           service:
             name: auth-service
             port:
               number: 4001
-      - path: /api/domains(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /api/domains
+        pathType: Prefix
         backend:
           service:
             name: command-service
             port:
               number: 4002
-      - path: /api/assets(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /api/assets
+        pathType: Prefix
         backend:
           service:
             name: command-service
             port:
               number: 4002
-      - path: /api/units(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /api/units
+        pathType: Prefix
         backend:
           service:
             name: command-service
             port:
               number: 4002
-      - path: /api/dashboard(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /api/dashboard
+        pathType: Prefix
         backend:
           service:
             name: command-service
             port:
               number: 4002
-      - path: /api/threats(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /api/threats
+        pathType: Prefix
         backend:
           service:
             name: threat-service
             port:
               number: 4003
-      - path: /api/alerts(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /api/alerts
+        pathType: Prefix
         backend:
           service:
             name: threat-service
             port:
               number: 4003
-      - path: /api/missions(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /api/missions
+        pathType: Prefix
         backend:
           service:
             name: mission-service
             port:
               number: 4004
-      - path: /socket.io(/|$)(.*)
-        pathType: ImplementationSpecific
+      - path: /socket.io
+        pathType: Prefix
         backend:
           service:
             name: command-service
             port:
               number: 4002
-      - path: /?(.*)
-        pathType: ImplementationSpecific
+      - path: /
+        pathType: Prefix
         backend:
           service:
             name: frontend

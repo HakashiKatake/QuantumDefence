@@ -25,6 +25,7 @@ for CMD in "${PREREQS[@]}"; do
 done
 
 # Export SSO session credentials so Terraform can authenticate
+unset AWS_ACCESS_KEY_ID AWS_SECRET_ACCESS_KEY AWS_SESSION_TOKEN
 if aws configure export-credentials &> /dev/null; then
   echo -e "${CYAN}Exporting session credentials for Terraform...${NC}"
   CREDS=$(aws configure export-credentials)

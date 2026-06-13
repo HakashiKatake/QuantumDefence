@@ -1,7 +1,27 @@
 apiVersion: networking.k8s.io/v1
 kind: Ingress
 metadata:
-  name: monitoring-ingress
+  name: monitoring-grafana-ingress
+  namespace: monitoring
+  annotations:
+    nginx.ingress.kubernetes.io/ssl-redirect: "false"
+spec:
+  ingressClassName: nginx
+  rules:
+  - http:
+      paths:
+      - path: /grafana
+        pathType: Prefix
+        backend:
+          service:
+            name: monitoring-grafana
+            port:
+              number: 3000
+---
+apiVersion: networking.k8s.io/v1
+kind: Ingress
+metadata:
+  name: monitoring-prometheus-ingress
   namespace: monitoring
   annotations:
     nginx.ingress.kubernetes.io/ssl-redirect: "false"
@@ -12,15 +32,6 @@ spec:
   rules:
   - http:
       paths:
-      # Grafana — accessible at /grafana/
-      - path: /grafana(/|$)(.*)
-        pathType: ImplementationSpecific
-        backend:
-          service:
-            name: monitoring-grafana
-            port:
-              number: 80
-      # Prometheus — accessible at /prometheus/
       - path: /prometheus(/|$)(.*)
         pathType: ImplementationSpecific
         backend:

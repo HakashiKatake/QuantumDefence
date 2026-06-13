@@ -42,7 +42,7 @@ module "eks" {
       max_size     = 3
       desired_size = 2
 
-      instance_types = ["t3.medium"]  # t3.small max-pods=11 is insufficient for full stack (5 svcs + monitoring + vault + nginx)
+      instance_types = ["c7i-flex.large"]  # Verified as free-tier eligible in this account (higher pod capacity)
       capacity_type  = "ON_DEMAND"
     }
   }
