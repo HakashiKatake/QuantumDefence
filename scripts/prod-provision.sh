@@ -67,6 +67,10 @@ echo -e "${CYAN}4. Deploying Vault to Kubernetes cluster...${NC}"
 kubectl apply -f ../kubernetes/namespace.yaml
 helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo update
+
+# Delete conflicting webhook configuration from previous failed runs to prevent upgrade conflicts
+kubectl delete mutatingwebhookconfiguration vault-agent-injector-cfg --ignore-not-found || true
+
 helm upgrade --install vault hashicorp/vault \
   --set "server.dev.enabled=true" \
   --set "server.dev.devRootToken=root-dev-token" \
