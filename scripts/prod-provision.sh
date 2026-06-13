@@ -155,10 +155,10 @@ server {
 }
 EOF
     
-    docker build -t "$REPO_URL:latest" .
+    docker build --platform linux/amd64 -t "$REPO_URL:latest" .
   else
     cd "/Users/saurabhyadav/Desktop/QuantumDefence/services/$SERVICE"
-    docker build -t "$REPO_URL:latest" .
+    docker build --platform linux/amd64 -t "$REPO_URL:latest" .
   fi
   
   echo -e "Pushing $SERVICE image to ECR..."
