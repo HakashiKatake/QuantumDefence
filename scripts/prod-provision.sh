@@ -187,7 +187,7 @@ for ITEM in "${SERVICES_MAP[@]}"; do
       -e "s|db-service.quantum-defense.svc.cluster.local|$RDS_HOST|g" \
       -e "s|postgrespassword|TacticalC2SecureDBPass!|g" \
       -e "s|schema=public|schema=$SCHEMA|g" \
-      "kubernetes/app/$SVC-deployment.yaml" | kubectl apply -f -
+      "kubernetes/app/$SCHEMA-deployment.yaml" | kubectl apply -f -
 done
 
 # Deploy Frontend
