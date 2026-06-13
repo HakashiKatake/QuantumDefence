@@ -5,7 +5,6 @@
 **Date:** June 2026  
 **Status:** Approved  
 **Author:** DevOps & Systems Engineering Team  
-**Case Study Reference:** Case Study 101, ITM Skills University, B.Tech CSE (2024-2028), Semester IV  
 
 ---
 

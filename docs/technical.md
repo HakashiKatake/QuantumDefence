@@ -222,7 +222,7 @@ server {
 ---
 
 ## 6. Docker Build Process
-We use multi-stage Docker builds to keep image sizes small and remove development dependencies in production:
+I use multi-stage Docker builds to keep image sizes small and remove development dependencies in production:
 
 ```dockerfile
 # Stage 1: Build & Install Dependencies

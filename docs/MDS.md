@@ -5,7 +5,6 @@
 **Date:** June 2026  
 **Status:** Approved  
 **Author:** Lead Systems Architect  
-**Case Study Reference:** Case Study 101, ITM Skills University  
 
 ---
 

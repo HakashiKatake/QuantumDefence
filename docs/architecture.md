@@ -240,7 +240,7 @@ At startup, each microservice container initiates a secure hand-shake:
 ### ADR-01: Adoption of Microservices Architecture
 * **Status:** Approved
 * **Context:** The system needs to support multiple independent combat domains, each scaling differently (e.g., Command Service requires higher compute for telemetry updates, while Auth is low-frequency).
-* **Decision:** We use a microservices architecture to allow independent scalability, domain boundaries, and isolated fault horizons.
+* **Decision:** I use a microservices architecture to allow independent scalability, domain boundaries, and isolated fault horizons.
 * **Consequences:** Increases network overhead and operational complexity, which is managed through Nginx, Docker, and Kubernetes.
 
 ### ADR-02: Shared PostgreSQL Instance with Logical Separation
