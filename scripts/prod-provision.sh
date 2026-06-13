@@ -69,7 +69,7 @@ helm repo add hashicorp https://helm.releases.hashicorp.com
 helm repo update
 helm upgrade --install vault hashicorp/vault \
   --set "server.dev.enabled=true" \
-  --set "server.dev.token=root-dev-token" \
+  --set "server.dev.rootToken=root-dev-token" \
   -n quantum-defense \
   --create-namespace
 
