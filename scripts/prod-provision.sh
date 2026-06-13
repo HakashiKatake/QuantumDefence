@@ -31,14 +31,21 @@ if ! aws sts get-caller-identity &> /dev/null; then
 fi
 echo -e "${GREEN}AWS credentials verified.${NC}"
 
-# Extract and export session credentials for Terraform
-if aws configure export-credentials &> /dev/null; then
-  echo -e "${CYAN}Exporting session credentials for Terraform...${NC}"
-  CREDS=$(aws configure export-credentials)
-  export AWS_ACCESS_KEY_ID=$(echo "$CREDS" | jq -r '.AccessKeyId')
-  export AWS_SECRET_ACCESS_KEY=$(echo "$CREDS" | jq -r '.SecretAccessKey')
-  export AWS_SESSION_TOKEN=$(echo "$CREDS" | jq -r '.SessionToken')
-fi
+# Function to refresh AWS session credentials
+refresh_aws_credentials() {
+  if aws configure export-credentials &> /dev/null; then
+    echo -e "${CYAN}Refreshing AWS session credentials...${NC}"
+    CREDS=$(aws configure export-credentials)
+    export AWS_ACCESS_KEY_ID=$(echo "$CREDS" | jq -r '.AccessKeyId')
+    export AWS_SECRET_ACCESS_KEY=$(echo "$CREDS" | jq -r '.SecretAccessKey')
+    export AWS_SESSION_TOKEN=$(echo "$CREDS" | jq -r '.SessionToken')
+  else
+    echo -e "${CYAN}No session credentials exported; using default credentials profile.${NC}"
+  fi
+}
+
+# Initial credentials export
+refresh_aws_credentials
 
 # 2. Terraform Infrastructure Provisioning
 echo -e "${CYAN}2. Provisioning AWS Infrastructure via Terraform...${NC}"
@@ -160,6 +167,7 @@ done
 
 # 6. Apply Kubernetes Application Manifests
 echo -e "${CYAN}6. Deploying Application services to EKS...${NC}"
+refresh_aws_credentials
 cd /Users/saurabhyadav/Desktop/QuantumDefence
 
 # Deploy ConfigMap, Ingress and Autoscalers
@@ -189,6 +197,7 @@ sed -e "s|quantum-defense/frontend:latest|$FRONTEND_REPO:latest|g" \
 
 # 7. Database Initialization and Seeding
 echo -e "${CYAN}7. Initializing and Seeding Database inside EKS...${NC}"
+refresh_aws_credentials
 echo -e "Waiting for microservice pods to be ready..."
 kubectl rollout status deployment/auth-service -n quantum-defense --timeout=180s
 kubectl rollout status deployment/command-service -n quantum-defense --timeout=180s
