@@ -77,3 +77,9 @@ Thumbs.db
 bin/
 terraform/.terraform/
 terraform/*.tfstate*
+
+# Secrets — NEVER commit real credentials
+secrets.env
+*.kubeconfig
+scripts/secrets.env
+/Users/saurabhyadav/Desktop/eks-kubeconfig.txt

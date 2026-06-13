@@ -1,0 +1,114 @@
+## QuantumDefense — kube-prometheus-stack Helm values
+## Lightweight config tuned for t3.medium EKS nodes (2vCPU/4GB) that are
+## already running 5 microservices + Vault + Nginx Ingress.
+
+grafana:
+  enabled: true
+  adminUser: admin
+  # adminPassword is injected at install time via --set grafana.adminPassword in prod-provision.sh
+  # (sourced from scripts/secrets.env which is gitignored)
+
+  sidecar:
+    datasources:
+      enabled: true
+    dashboards:
+      enabled: true
+
+  grafana.ini:
+    server:
+      root_url: "%(protocol)s://%(domain)s/grafana/"
+      serve_from_sub_path: true
+
+  persistence:
+    enabled: false   # stateless — avoids EBS PVC cost
+
+  resources:
+    requests:
+      cpu: 50m
+      memory: 128Mi
+    limits:
+      cpu: 200m
+      memory: 256Mi
+
+  service:
+    type: ClusterIP
+    port: 3000
+
+prometheus:
+  enabled: true
+  prometheusSpec:
+    podMonitorSelectorNilUsesHelmValues: false
+    serviceMonitorSelectorNilUsesHelmValues: false
+    retention: 12h
+    # Tight resource limits to fit on t3.medium alongside app pods
+    resources:
+      requests:
+        cpu: 100m
+        memory: 256Mi
+      limits:
+        cpu: 500m
+        memory: 512Mi
+    storageSpec: {}   # no PVC — in-memory only for demo
+    additionalScrapeConfigs:
+      - job_name: 'qdefense-auth-service'
+        metrics_path: '/metrics'
+        static_configs:
+          - targets: ['auth-service.quantum-defense.svc.cluster.local:4001']
+            labels:
+              service: 'auth-service'
+      - job_name: 'qdefense-command-service'
+        metrics_path: '/metrics'
+        static_configs:
+          - targets: ['command-service.quantum-defense.svc.cluster.local:4002']
+            labels:
+              service: 'command-service'
+      - job_name: 'qdefense-threat-service'
+        metrics_path: '/metrics'
+        static_configs:
+          - targets: ['threat-service.quantum-defense.svc.cluster.local:4003']
+            labels:
+              service: 'threat-service'
+      - job_name: 'qdefense-mission-service'
+        metrics_path: '/metrics'
+        static_configs:
+          - targets: ['mission-service.quantum-defense.svc.cluster.local:4004']
+            labels:
+              service: 'mission-service'
+
+# Disabled — not needed for demo, saves ~200MB RAM and 2 pods
+alertmanager:
+  enabled: false
+
+# Node exporter runs as DaemonSet — only enable if nodes have room
+nodeExporter:
+  enabled: true
+  resources:
+    requests:
+      cpu: 20m
+      memory: 32Mi
+    limits:
+      cpu: 100m
+      memory: 64Mi
+
+kubeStateMetrics:
+  enabled: true
+  resources:
+    requests:
+      cpu: 20m
+      memory: 64Mi
+    limits:
+      cpu: 100m
+      memory: 128Mi
+
+# Disable rules that require inaccessible endpoints on managed EKS
+defaultRules:
+  create: true
+  rules:
+    alertmanager: false
+    etcd: false
+    general: true
+    k8s: true
+    kubeApiserver: false
+    kubeScheduler: false
+    kubeControllerManager: false
+    node: true

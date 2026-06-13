@@ -42,7 +42,7 @@ module "eks" {
       max_size     = 3
       desired_size = 2
 
-      instance_types = ["t3.small"]
+      instance_types = ["t3.medium"]  # t3.small max-pods=11 is insufficient for full stack (5 svcs + monitoring + vault + nginx)
       capacity_type  = "ON_DEMAND"
     }
   }
@@ -101,6 +101,8 @@ resource "aws_instance" "jenkins" {
   subnet_id     = module.vpc.public_subnets[0]
   associate_public_ip_address = true
   vpc_security_group_ids = [aws_security_group.jenkins_sg.id]
+  iam_instance_profile = aws_iam_instance_profile.jenkins_profile.name
+  user_data_replace_on_change = true
 
   user_data = <<-EOF
               #!/bin/bash
@@ -110,10 +112,10 @@ resource "aws_instance" "jenkins" {
               apt-get update -y
               
               # Install Java (Prerequisite for Jenkins)
-              apt-get install -y openjdk-17-jdk openjdk-17-jre
+              apt-get install -y openjdk-21-jdk openjdk-21-jre
               
               # Add Jenkins GPG key and Repository
-              curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2023.key | tee \
+              curl -fsSL https://pkg.jenkins.io/debian-stable/jenkins.io-2026.key | tee \
                 /usr/share/keyrings/jenkins-keyring.asc > /dev/null
               echo deb [signed-by=/usr/share/keyrings/jenkins-keyring.asc] \
                 https://pkg.jenkins.io/debian-stable binary/ | tee \
@@ -203,4 +205,32 @@ resource "aws_ecr_repository" "repos" {
 resource "aws_s3_bucket" "backups" {
   bucket        = "${var.project_name}-backups-saurabhyadav"
   force_destroy = true
+}
+
+# IAM Role and Profile for Jenkins SSM Access
+resource "aws_iam_role" "jenkins_role" {
+  name = "${var.project_name}-jenkins-ssm-role"
+
+  assume_role_policy = jsonencode({
+    Version = "2012-10-17"
+    Statement = [
+      {
+        Action = "sts:AssumeRole"
+        Effect = "Allow"
+        Principal = {
+          Service = "ec2.amazonaws.com"
+        }
+      }
+    ]
+  })
+}
+
+resource "aws_iam_role_policy_attachment" "jenkins_ssm_attach" {
+  role       = aws_iam_role.jenkins_role.name
+  policy_arn = "arn:aws:iam::aws:policy/AmazonSSMManagedInstanceCore"
+}
+
+resource "aws_iam_instance_profile" "jenkins_profile" {
+  name = "${var.project_name}-jenkins-profile"
+  role = aws_iam_role.jenkins_role.name
 }
