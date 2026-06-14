@@ -582,16 +582,16 @@ This executes the following steps:
 
 Demonstration screenshots are located in `docs/screenshots/`.
 
-1. **[Secure Login Interface](file:///Users/saurabhyadav/Desktop/QuantumDefence/docs/screenshots/login_page.png)**: Authenticates command personnel using credentials stored in PostgreSQL and validated via JWT.
-2. **[Tactical COP Dashboard](file:///Users/saurabhyadav/Desktop/QuantumDefence/docs/screenshots/dashboard_v1.png)**: Visualizes domain assets, threat alerts, and coordinates on the Leaflet.js map.
-3. **[Active Threat Tracker](file:///Users/saurabhyadav/Desktop/QuantumDefence/docs/screenshots/threats_status.png)**: Shows severity classifications and neutralization statuses.
-4. **[Mission Scheduling](file:///Users/saurabhyadav/Desktop/QuantumDefence/docs/screenshots/missions_status.png)**: Directs state transitions and assigns unit targets.
-5. **[Asset Telemetry & Readiness](file:///Users/saurabhyadav/Desktop/QuantumDefence/docs/screenshots/assets_status.png)**: Tracks readiness, coordinates, and fuel levels of deployment assets.
-6. **[Alert & Notification Stream](file:///Users/saurabhyadav/Desktop/QuantumDefence/docs/screenshots/alerts_status.png)**: Broadcasts real-time security threats and system log events via Socket.IO.
-7. **[Vault Administration](file:///Users/saurabhyadav/Desktop/QuantumDefence/docs/screenshots/vault_secret_config.png)**: Demonstrates secret storage and credentials protection.
-8. **[Jenkins CI/CD Pipeline Run](file:///Users/saurabhyadav/Desktop/QuantumDefence/docs/screenshots/jenkins_pipeline_run.png)**: Illustrates the successful build and deploy pipeline stages.
-9. **[Grafana Metrics Monitoring](file:///Users/saurabhyadav/Desktop/QuantumDefence/docs/screenshots/grafana_alerts.png)**: Details container memory, CPU utilization, and HTTP request throughput.
-10. **[Kibana Logging Query](file:///Users/saurabhyadav/Desktop/QuantumDefence/docs/screenshots/elk_kibana_logs.png)**: Queries structured JSON logs from microservices.
+1. **[Secure Login Interface](docs/screenshots/login_page.png)**: Authenticates command personnel using credentials stored in PostgreSQL and validated via JWT.
+2. **[Tactical COP Dashboard](docs/screenshots/dashboard_v1.png)**: Visualizes domain assets, threat alerts, and coordinates on the Leaflet.js map.
+3. **[Active Threat Tracker](docs/screenshots/threats_status.png)**: Shows severity classifications and neutralization statuses.
+4. **[Mission Scheduling](docs/screenshots/missions_status.png)**: Directs state transitions and assigns unit targets.
+5. **[Asset Telemetry & Readiness](docs/screenshots/assets_status.png)**: Tracks readiness, coordinates, and fuel levels of deployment assets.
+6. **[Alert & Notification Stream](docs/screenshots/alerts_status.png)**: Broadcasts real-time security threats and system log events via Socket.IO.
+7. **[Vault Administration](docs/screenshots/vault_secret_config.png)**: Demonstrates secret storage and credentials protection.
+8. **[Jenkins CI/CD Pipeline Run](docs/screenshots/jenkins_pipeline_run.png)**: Illustrates the successful build and deploy pipeline stages.
+9. **[Grafana Metrics Monitoring](docs/screenshots/grafana_alerts.png)**: Details container memory, CPU utilization, and HTTP request throughput.
+10. **[Kibana Logging Query](docs/screenshots/elk_kibana_logs.png)**: Queries structured JSON logs from microservices.
 
 ### 1. Secure Login Interface
 ![Secure Login Interface](docs/screenshots/login_page.png)
