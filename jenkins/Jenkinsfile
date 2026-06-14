@@ -22,6 +22,7 @@ pipeline {
                     steps {
                         dir('services/auth-service') {
                             sh 'npm ci && npm run lint || true'
+                            sh 'rm -rf node_modules'
                         }
                     }
                 }
@@ -29,6 +30,7 @@ pipeline {
                     steps {
                         dir('services/command-service') {
                             sh 'npm ci && npm run lint || true'
+                            sh 'rm -rf node_modules'
                         }
                     }
                 }
@@ -36,6 +38,7 @@ pipeline {
                     steps {
                         dir('services/threat-service') {
                             sh 'npm ci && npm run lint || true'
+                            sh 'rm -rf node_modules'
                         }
                     }
                 }
@@ -43,6 +46,7 @@ pipeline {
                     steps {
                         dir('services/mission-service') {
                             sh 'npm ci && npm run lint || true'
+                            sh 'rm -rf node_modules'
                         }
                     }
                 }
@@ -50,6 +54,7 @@ pipeline {
                     steps {
                         dir('frontend') {
                             sh 'npm ci && npm run lint || true'
+                            sh 'rm -rf node_modules'
                         }
                     }
                 }
