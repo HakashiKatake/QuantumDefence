@@ -19,15 +19,19 @@ export const Sidebar = () => {
   }
 
   return (
-    <aside className="w-60 bg-bg-input border-r border-border-cyan flex flex-col py-6 box-border h-full select-none">
-      <div className="px-6 pb-6 border-b border-white/5 mb-4">
-        <div className="text-[11px] font-mono text-white/40 tracking-wider">CLEARANCE LEVEL</div>
-        <div className="text-[13px] font-bold text-accent-amber mt-1 tracking-wide">
+    <aside className="w-64 bg-zinc-900 border-r border-zinc-800 flex flex-col py-6 box-border h-full select-none">
+      <div className="px-6 pb-6 border-b border-zinc-800 mb-6">
+        <div className="text-[10px] font-mono text-zinc-500 tracking-wider uppercase">Access Clearance</div>
+        <div className={`mt-2 px-3 py-1.5 rounded text-[11px] font-mono font-bold tracking-wider text-center border ${
+          user && user.role === 'Commander' 
+            ? 'bg-amber-500/10 border-amber-500/20 text-amber-500' 
+            : 'bg-cyan-500/10 border-cyan-500/20 text-cyan-500'
+        }`}>
           {user && user.role === 'Commander' ? 'TOP SECRET // C2' : 'SECRET // REL TO USA'}
         </div>
       </div>
 
-      <nav className="flex flex-col gap-1 px-3">
+      <nav className="flex flex-col gap-1 px-4">
         {navItems.map((item) => {
           const Icon = item.icon;
           return (
@@ -35,22 +39,26 @@ export const Sidebar = () => {
               key={item.name}
               to={item.path}
               className={({ isActive }) => `
-                flex items-center gap-3 px-4 py-3 rounded text-[14px] font-medium transition-all duration-200 border-l-3
+                flex items-center gap-3 px-3.5 py-2.5 rounded-md text-[13px] font-medium transition-all duration-150
                 ${isActive 
-                  ? 'text-white bg-accent-cyan/10 border-accent-cyan font-semibold' 
-                  : 'text-white/50 border-transparent hover:text-white hover:bg-white/2'}
+                  ? 'text-zinc-50 bg-zinc-800 border-l-2 border-accent-cyan font-semibold' 
+                  : 'text-zinc-400 border-l-2 border-transparent hover:text-zinc-100 hover:bg-zinc-800/50'}
               `}
             >
-              <Icon className="w-[18px] h-[18px]" />
+              <Icon className="w-4.5 h-4.5" />
               {item.name}
             </NavLink>
           );
         })}
       </nav>
 
-      <div className="mt-auto px-6 text-[11px] text-white/30 font-mono tracking-wider">
-        <div>v1.0.0-RELEASE</div>
-        <div>STATION ID: C2-NODE-01</div>
+      <div className="mt-auto px-6 text-[10px] text-zinc-500 font-mono tracking-wider flex flex-col gap-1">
+        <div className="flex items-center gap-1.5">
+          <span className="w-1.5 h-1.5 rounded-full bg-emerald-500"></span>
+          <span>C2-NODE-01 // ACTIVE</span>
+        </div>
+        <div>SECURE LINK ENGAGED</div>
+        <div className="text-[9px] text-zinc-600 mt-1">v1.0.0-RELEASE</div>
       </div>
     </aside>
   );

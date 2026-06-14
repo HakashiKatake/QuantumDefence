@@ -97,17 +97,17 @@ export const ThreatsPage = () => {
   const isAnalystOrAdmin = user && ['Analyst', 'Admin'].includes(user.role);
 
   return (
-    <div className="page-container flex flex-col gap-5">
+    <div className="page-container flex flex-col gap-6">
       <div className="flex justify-between items-center select-none">
         <div>
-          <h2 className="m-0 text-[22px] font-bold text-white">Multi-Domain Threat Management</h2>
-          <p className="text-white/40 text-[13px] mt-1">Monitor, register, and coordinate neutralization of hostile targets.</p>
+          <h2 className="m-0 text-[20px] font-bold text-zinc-100">Multi-Domain Threat Management</h2>
+          <p className="text-zinc-400 text-[12px] mt-1">Monitor, register, and coordinate neutralization of hostile targets.</p>
         </div>
         
         {isAnalystOrAdmin && (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 bg-transparent border border-accent-cyan text-accent-cyan px-4 py-2 rounded cursor-pointer font-semibold text-[13px] uppercase transition-all duration-200 hover:bg-accent-cyan hover:text-bg-main"
+            className="flex items-center gap-2 bg-transparent border border-zinc-800 text-zinc-300 px-4 py-2 rounded-lg cursor-pointer font-semibold text-[12px] uppercase transition-all duration-150 hover:bg-zinc-800 hover:text-zinc-100"
           >
             <Plus className="w-4 h-4" />
             {showForm ? 'Cancel Form' : 'Register Threat'}
@@ -120,12 +120,12 @@ export const ThreatsPage = () => {
         <DataCard title="REGISTER HOSTILE INTEL DETECTED">
           <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-4 mt-2">
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">TARGET DESIGNATION</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">TARGET DESIGNATION</label>
               <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="E.g., Hostile-Jet-A" className={inputClass} />
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">THREAT SIGNATURE TYPE</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">THREAT SIGNATURE TYPE</label>
               <select value={type} onChange={(e) => setType(e.target.value)} className={inputClass}>
                 <option value="Fighter">Fighter Jet</option>
                 <option value="Missile">Ballistic Missile</option>
@@ -136,7 +136,7 @@ export const ThreatsPage = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">SEVERITY LEVEL</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">SEVERITY LEVEL</label>
               <select value={severity} onChange={(e) => setSeverity(e.target.value)} className={inputClass}>
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
@@ -146,7 +146,7 @@ export const ThreatsPage = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">SECTOR DOMAIN</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">SECTOR DOMAIN</label>
               <select value={domainId} onChange={(e) => setDomainId(e.target.value)} className={inputClass}>
                 <option value="1">Land Force</option>
                 <option value="2">Air Force</option>
@@ -157,22 +157,22 @@ export const ThreatsPage = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">LATITUDE (COORD X)</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">LATITUDE (COORD X)</label>
               <input type="number" step="0.00001" required value={lat} onChange={(e) => setLat(e.target.value)} className={inputClass} />
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">LONGITUDE (COORD Y)</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">LONGITUDE (COORD Y)</label>
               <input type="number" step="0.00001" required value={lng} onChange={(e) => setLng(e.target.value)} className={inputClass} />
             </div>
 
             <div className="col-span-3">
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">INTEL REPORT DETAILS</label>
-              <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Intel narrative..." className={`${inputClass} h-[60px] py-2 resize-none`} />
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">INTEL REPORT DETAILS</label>
+              <textarea value={description} onChange={(e) => setDescription(e.target.value)} placeholder="Intel narrative..." className={`${inputClass} h-[70px] py-2 resize-none`} />
             </div>
 
             <div className="col-span-3 flex justify-end">
-              <button type="submit" disabled={loading} className="bg-accent-cyan border-none text-bg-main px-6 py-2.5 rounded cursor-pointer font-bold text-[13px] uppercase font-sans">
+              <button type="submit" disabled={loading} className="bg-zinc-100 border border-zinc-100 text-zinc-900 hover:bg-zinc-200 hover:border-zinc-200 px-5 py-2 rounded-lg cursor-pointer font-bold text-[12px] uppercase tracking-wider transition-colors duration-150">
                 {loading ? 'Transmitting...' : 'Transmit Intel Report'}
               </button>
             </div>
@@ -181,62 +181,64 @@ export const ThreatsPage = () => {
       )}
 
       {/* Threats Grid List */}
-      <div className="bg-bg-card border border-border-cyan rounded overflow-hidden">
-        <div className="px-4 py-4 border-b border-white/5 text-[12px] font-semibold text-accent-cyan tracking-wider uppercase select-none font-sans">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden">
+        <div className="px-5 py-4 border-b border-zinc-800 text-[10px] font-bold text-zinc-400 tracking-wider uppercase select-none font-sans">
           ACTIVE HOSTILE TARGET REGISTER
         </div>
         
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="border-b border-white/5 text-[11px] text-white/40 uppercase select-none">
-              <th className="px-4 py-3">Target ID</th>
-              <th className="px-4 py-3">Designation</th>
-              <th className="px-4 py-3">Signature Type</th>
-              <th className="px-4 py-3">Severity</th>
-              <th className="px-4 py-3">Coordinates</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3">Detected Time</th>
-              <th className="px-4 py-3 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {threats.length === 0 ? (
-              <tr>
-                <td colSpan="8" className="px-4 py-6 text-center text-white/30 text-[13px] font-mono select-none">
-                  NO THREAT OBJECTS REGISTERED IN SYSTEM
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left">
+            <thead>
+              <tr className="border-b border-zinc-800 text-[10px] text-zinc-400 uppercase select-none">
+                <th className="px-5 py-3.5 font-semibold">Target ID</th>
+                <th className="px-5 py-3.5 font-semibold">Designation</th>
+                <th className="px-5 py-3.5 font-semibold">Signature Type</th>
+                <th className="px-5 py-3.5 font-semibold">Severity</th>
+                <th className="px-5 py-3.5 font-semibold">Coordinates</th>
+                <th className="px-5 py-3.5 font-semibold">Status</th>
+                <th className="px-5 py-3.5 font-semibold">Detected Time</th>
+                <th className="px-5 py-3.5 text-right font-semibold">Actions</th>
               </tr>
-            ) : (
-              threats.map(threat => (
-                <tr key={threat.id} className="border-b border-white/2 text-[13px]">
-                  <td className="px-4 py-3 font-mono">T-{threat.id}</td>
-                  <td className="px-4 py-3 font-semibold text-white">{threat.name}</td>
-                  <td className="px-4 py-3">{threat.type}</td>
-                  <td className="px-4 py-3"><SeverityIndicator severity={threat.severity} /></td>
-                  <td className="px-4 py-3 font-mono">{threat.lat.toFixed(4)}, {threat.lng.toFixed(4)}</td>
-                  <td className="px-4 py-3"><StatusBadge status={threat.status} /></td>
-                  <td className="px-4 py-3 text-[12px]">{new Date(threat.detectedAt).toLocaleString()}</td>
-                  <td className="px-4 py-3 text-right">
-                    {threat.status !== 'Neutralized' && (
-                      <button
-                        onClick={() => neutralizeThreat(threat.id)}
-                        className="bg-accent-red/10 border border-accent-red text-accent-red px-2.5 py-1 rounded cursor-pointer text-[11px] font-semibold uppercase inline-flex items-center gap-1 transition-all duration-200 hover:bg-accent-red hover:text-white"
-                      >
-                        <Crosshair className="w-3 h-3" />
-                        Neutralize
-                      </button>
-                    )}
+            </thead>
+            <tbody>
+              {threats.length === 0 ? (
+                <tr>
+                  <td colSpan="8" className="px-5 py-8 text-center text-zinc-500 text-[12px] font-mono select-none">
+                    NO THREAT OBJECTS REGISTERED IN SYSTEM
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                threats.map(threat => (
+                  <tr key={threat.id} className="border-b border-zinc-800/40 text-[12.5px] text-zinc-300 hover:bg-zinc-850/20">
+                    <td className="px-5 py-3.5 font-mono text-zinc-400">T-{threat.id}</td>
+                    <td className="px-5 py-3.5 font-semibold text-zinc-100">{threat.name}</td>
+                    <td className="px-5 py-3.5 text-zinc-300">{threat.type}</td>
+                    <td className="px-5 py-3.5"><SeverityIndicator severity={threat.severity} /></td>
+                    <td className="px-5 py-3.5 font-mono text-zinc-400">{threat.lat.toFixed(4)}, {threat.lng.toFixed(4)}</td>
+                    <td className="px-5 py-3.5"><StatusBadge status={threat.status} /></td>
+                    <td className="px-5 py-3.5 text-[11.5px] text-zinc-400">{new Date(threat.detectedAt).toLocaleString()}</td>
+                    <td className="px-5 py-3.5 text-right">
+                      {threat.status !== 'Neutralized' && (
+                        <button
+                          onClick={() => neutralizeThreat(threat.id)}
+                          className="bg-red-500/10 border border-red-500/20 hover:border-red-500/40 text-red-400 hover:text-red-300 px-3 py-1.5 rounded-lg cursor-pointer text-[11px] font-semibold uppercase inline-flex items-center gap-1.5 transition-all duration-150"
+                        >
+                          <Crosshair className="w-3.5 h-3.5" />
+                          Neutralize
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 };
 
-const inputClass = "w-full h-9 bg-bg-input border border-border-cyan rounded text-white px-3 box-border outline-none text-[13px] font-sans focus:border-accent-cyan";
+const inputClass = "w-full h-9 bg-zinc-950 border border-zinc-800 rounded-md text-zinc-200 px-3 box-border outline-none text-[13px] font-sans focus:border-zinc-700 transition-colors duration-150";
 
 export default ThreatsPage;

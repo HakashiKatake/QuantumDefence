@@ -117,17 +117,17 @@ export const AssetsPage = () => {
   const isOperatorOrAdmin = user && ['Operator', 'Admin'].includes(user.role);
 
   return (
-    <div className="page-container flex flex-col gap-5">
+    <div className="page-container flex flex-col gap-6">
       <div className="flex justify-between items-center select-none">
         <div>
-          <h2 className="m-0 text-[22px] font-bold text-white">Military Asset Inventory</h2>
-          <p className="text-white/40 text-[13px] mt-1">Monitor operational friendly units and assets deployed in theater.</p>
+          <h2 className="m-0 text-[20px] font-bold text-zinc-100">Military Asset Inventory</h2>
+          <p className="text-zinc-400 text-[12px] mt-1">Monitor operational friendly units and assets deployed in theater.</p>
         </div>
         
         {isOperatorOrAdmin && (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 bg-transparent border border-accent-cyan text-accent-cyan px-4 py-2 rounded cursor-pointer font-semibold text-[13px] uppercase transition-all duration-200 hover:bg-accent-cyan hover:text-bg-main"
+            className="flex items-center gap-2 bg-transparent border border-zinc-800 text-zinc-300 px-4 py-2 rounded-lg cursor-pointer font-semibold text-[12px] uppercase transition-all duration-150 hover:bg-zinc-800 hover:text-zinc-100"
           >
             <Plus className="w-4 h-4" />
             {showForm ? 'Cancel Form' : 'Register Asset'}
@@ -140,12 +140,12 @@ export const AssetsPage = () => {
         <DataCard title="REGISTER ACTIVE FRIENDLY COMBAT ASSET">
           <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-4 mt-2">
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">ASSET NAME / CALLSIGN</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">ASSET NAME / CALLSIGN</label>
               <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="E.g., Eagle-One" className={inputClass} />
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">ASSET TYPE</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">ASSET TYPE</label>
               <select value={type} onChange={(e) => setType(e.target.value)} className={inputClass}>
                 <option value="Jet">Fighter Jet</option>
                 <option value="Tank">MBT Tank</option>
@@ -156,7 +156,7 @@ export const AssetsPage = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">ATTACH TO MILITARY UNIT</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">ATTACH TO MILITARY UNIT</label>
               <select value={unitId} onChange={(e) => setUnitId(e.target.value)} className={inputClass}>
                 {units.map(u => (
                   <option key={u.id} value={u.id}>{u.name} ({u.callsign})</option>
@@ -165,7 +165,7 @@ export const AssetsPage = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">SECTOR DOMAIN</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">SECTOR DOMAIN</label>
               <select value={domainId} onChange={(e) => setDomainId(e.target.value)} className={inputClass}>
                 <option value="1">Land Force</option>
                 <option value="2">Air Force</option>
@@ -176,27 +176,27 @@ export const AssetsPage = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">INITIAL LATITUDE</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">INITIAL LATITUDE</label>
               <input type="number" step="0.00001" required value={lat} onChange={(e) => setLat(e.target.value)} className={inputClass} />
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">INITIAL LONGITUDE</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">INITIAL LONGITUDE</label>
               <input type="number" step="0.00001" required value={lng} onChange={(e) => setLng(e.target.value)} className={inputClass} />
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">INITIAL VELOCITY (SPEED)</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">INITIAL VELOCITY (SPEED)</label>
               <input type="number" required value={speed} onChange={(e) => setSpeed(e.target.value)} className={inputClass} />
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">INITIAL COMPASS HEADING</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">INITIAL COMPASS HEADING</label>
               <input type="number" min="0" max="359" required value={heading} onChange={(e) => setHeading(e.target.value)} className={inputClass} />
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">OPERATIONAL STATUS</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">OPERATIONAL STATUS</label>
               <select value={status} onChange={(e) => setStatus(e.target.value)} className={inputClass}>
                 <option value="Active">Active / Operational</option>
                 <option value="Standby">Standby / Reserve</option>
@@ -205,7 +205,7 @@ export const AssetsPage = () => {
             </div>
 
             <div className="col-span-3 flex justify-end">
-              <button type="submit" disabled={loading} className="bg-accent-cyan border-none text-bg-main px-6 py-2.5 rounded cursor-pointer font-bold text-[13px] uppercase font-sans">
+              <button type="submit" disabled={loading} className="bg-zinc-100 border border-zinc-100 text-zinc-900 hover:bg-zinc-200 hover:border-zinc-200 px-5 py-2 rounded-lg cursor-pointer font-bold text-[12px] uppercase tracking-wider transition-colors duration-150">
                 {loading ? 'Registering...' : 'Commission Asset'}
               </button>
             </div>
@@ -214,68 +214,74 @@ export const AssetsPage = () => {
       )}
 
       {/* Assets Grid List */}
-      <div className="bg-bg-card border border-border-cyan rounded overflow-hidden">
-        <div className="px-4 py-4 border-b border-white/5 text-[12px] font-semibold text-accent-cyan tracking-wider uppercase select-none font-sans">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden">
+        <div className="px-5 py-4 border-b border-zinc-800 text-[10px] font-bold text-zinc-400 tracking-wider uppercase select-none font-sans">
           ACTIVE COMBAT ASSET REGISTRY
         </div>
 
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="border-b border-white/5 text-[11px] text-white/40 uppercase select-none">
-              <th className="px-4 py-3">Asset ID</th>
-              <th className="px-4 py-3">Callsign</th>
-              <th className="px-4 py-3">Type</th>
-              <th className="px-4 py-3">Unit Attached</th>
-              <th className="px-4 py-3">Coordinates</th>
-              <th className="px-4 py-3">Heading / Speed</th>
-              <th className="px-4 py-3">Fuel / Ammo</th>
-              <th className="px-4 py-3">Status</th>
-              {isOperatorOrAdmin && <th className="px-4 py-3 text-right">Actions</th>}
-            </tr>
-          </thead>
-          <tbody>
-            {assets.length === 0 ? (
-              <tr>
-                <td colSpan={isOperatorOrAdmin ? 9 : 8} className="px-4 py-6 text-center text-white/30 text-[13px] font-mono select-none">
-                  NO FRIENDLY ASSETS DEPLOYED IN THEATER
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left">
+            <thead>
+              <tr className="border-b border-zinc-800 text-[10px] text-zinc-400 uppercase select-none">
+                <th className="px-5 py-3.5 font-semibold">Asset ID</th>
+                <th className="px-5 py-3.5 font-semibold">Callsign</th>
+                <th className="px-5 py-3.5 font-semibold">Type</th>
+                <th className="px-5 py-3.5 font-semibold">Unit Attached</th>
+                <th className="px-5 py-3.5 font-semibold">Coordinates</th>
+                <th className="px-5 py-3.5 font-semibold">Heading / Speed</th>
+                <th className="px-5 py-3.5 font-semibold">Fuel / Ammo</th>
+                <th className="px-5 py-3.5 font-semibold">Status</th>
+                {isOperatorOrAdmin && <th className="px-5 py-3.5 text-right font-semibold">Actions</th>}
               </tr>
-            ) : (
-              assets.map(asset => (
-                <tr key={asset.id} className="border-b border-white/2 text-[13px]">
-                  <td className="px-4 py-3 font-mono">A-{asset.id}</td>
-                  <td className="px-4 py-3 font-semibold text-white">{asset.name}</td>
-                  <td className="px-4 py-3">{asset.type}</td>
-                  <td className="px-4 py-3">{asset.unit ? asset.unit.name : `Unit #${asset.unitId}`}</td>
-                  <td className="px-4 py-3 font-mono">{asset.lat.toFixed(4)}, {asset.lng.toFixed(4)}</td>
-                  <td className="px-4 py-3 font-mono flex items-center gap-1.5 border-b-0">
-                    <Compass className="w-3.5 h-3.5 text-accent-cyan" />
-                    {asset.heading}° / {asset.speed} kn
+            </thead>
+            <tbody>
+              {assets.length === 0 ? (
+                <tr>
+                  <td colSpan={isOperatorOrAdmin ? 9 : 8} className="px-5 py-8 text-center text-zinc-500 text-[12px] font-mono select-none">
+                    NO FRIENDLY ASSETS DEPLOYED IN THEATER
                   </td>
-                  <td className="px-4 py-3 font-mono">
-                    <span className={asset.fuel < 30 ? 'text-accent-red' : 'text-accent-green'}>F: {asset.fuel.toFixed(0)}%</span> / A: {asset.ammo.toFixed(0)}%
-                  </td>
-                  <td className="px-4 py-3"><StatusBadge status={asset.status} /></td>
-                  {isOperatorOrAdmin && (
-                    <td className="px-4 py-3 text-right">
-                      <button
-                        onClick={() => deleteAsset(asset.id)}
-                        className="bg-transparent border-none text-white/40 cursor-pointer p-1 inline-flex items-center justify-center transition-colors duration-200 hover:text-accent-red"
-                      >
-                        <Trash2 className="w-4 h-4" />
-                      </button>
-                    </td>
-                  )}
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                assets.map(asset => (
+                  <tr key={asset.id} className="border-b border-zinc-800/40 text-[12.5px] text-zinc-300 hover:bg-zinc-850/20">
+                    <td className="px-5 py-3.5 font-mono text-zinc-400">A-{asset.id}</td>
+                    <td className="px-5 py-3.5 font-semibold text-zinc-100">{asset.name}</td>
+                    <td className="px-5 py-3.5 text-zinc-300">{asset.type}</td>
+                    <td className="px-5 py-3.5 text-zinc-300">{asset.unit ? asset.unit.name : `Unit #${asset.unitId}`}</td>
+                    <td className="px-5 py-3.5 font-mono text-zinc-400">{asset.lat.toFixed(4)}, {asset.lng.toFixed(4)}</td>
+                    <td className="px-5 py-3.5 font-mono text-zinc-300">
+                      <div className="flex items-center gap-1.5">
+                        <Compass className="w-3.5 h-3.5 text-zinc-400" />
+                        {asset.heading}° / {asset.speed} kn
+                      </div>
+                    </td>
+                    <td className="px-5 py-3.5 font-mono text-[12px]">
+                      <span className={asset.fuel < 30 ? 'text-red-400' : 'text-emerald-500'}>F: {asset.fuel.toFixed(0)}%</span>
+                      <span className="text-zinc-600 mx-1">/</span>
+                      <span className="text-zinc-400">A: {asset.ammo.toFixed(0)}%</span>
+                    </td>
+                    <td className="px-5 py-3.5"><StatusBadge status={asset.status} /></td>
+                    {isOperatorOrAdmin && (
+                      <td className="px-5 py-3.5 text-right">
+                        <button
+                          onClick={() => deleteAsset(asset.id)}
+                          className="bg-transparent border border-zinc-800 hover:border-red-500/30 hover:bg-red-500/10 text-zinc-500 hover:text-red-400 cursor-pointer p-1.5 rounded-lg inline-flex items-center justify-center transition-all duration-150"
+                        >
+                          <Trash2 className="w-3.5 h-3.5" />
+                        </button>
+                      </td>
+                    )}
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
 };
 
-const inputClass = "w-full h-9 bg-bg-input border border-border-cyan rounded text-white px-3 box-border outline-none text-[13px] font-sans focus:border-accent-cyan";
+const inputClass = "w-full h-9 bg-zinc-950 border border-zinc-800 rounded-md text-zinc-200 px-3 box-border outline-none text-[13px] font-sans focus:border-zinc-700 transition-colors duration-150";
 
 export default AssetsPage;

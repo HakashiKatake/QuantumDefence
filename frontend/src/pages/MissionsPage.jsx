@@ -114,17 +114,17 @@ export const MissionsPage = () => {
   const isCommanderOrAdmin = user && ['Commander', 'Admin'].includes(user.role);
 
   return (
-    <div className="page-container flex flex-col gap-5">
+    <div className="page-container flex flex-col gap-6">
       <div className="flex justify-between items-center select-none">
         <div>
-          <h2 className="m-0 text-[22px] font-bold text-white">Tactical Mission Operations</h2>
-          <p className="text-white/40 text-[13px] mt-1">Define, deploy, and track military objectives across domains.</p>
+          <h2 className="m-0 text-[20px] font-bold text-zinc-100">Tactical Mission Operations</h2>
+          <p className="text-zinc-400 text-[12px] mt-1">Define, deploy, and track military objectives across domains.</p>
         </div>
         
         {isCommanderOrAdmin && (
           <button
             onClick={() => setShowForm(!showForm)}
-            className="flex items-center gap-2 bg-transparent border border-accent-cyan text-accent-cyan px-4 py-2 rounded cursor-pointer font-semibold text-[13px] uppercase transition-all duration-200 hover:bg-accent-cyan hover:text-bg-main"
+            className="flex items-center gap-2 bg-transparent border border-zinc-800 text-zinc-300 px-4 py-2 rounded-lg cursor-pointer font-semibold text-[12px] uppercase transition-all duration-150 hover:bg-zinc-800 hover:text-zinc-100"
           >
             <Plus className="w-4 h-4" />
             {showForm ? 'Cancel Form' : 'New Mission'}
@@ -137,12 +137,12 @@ export const MissionsPage = () => {
         <DataCard title="CREATE NEW OPERATIONAL MISSION PLAN">
           <form onSubmit={handleSubmit} className="grid grid-cols-3 gap-4 mt-2">
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">MISSION NAME</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">MISSION NAME</label>
               <input type="text" required value={name} onChange={(e) => setName(e.target.value)} placeholder="E.g., Operation Eagle Strike" className={inputClass} />
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">SECTOR DOMAIN</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">SECTOR DOMAIN</label>
               <select value={domainId} onChange={(e) => setDomainId(e.target.value)} className={inputClass}>
                 <option value="1">Land Force</option>
                 <option value="2">Air Force</option>
@@ -153,7 +153,7 @@ export const MissionsPage = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">PRIORITY RANK</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">PRIORITY RANK</label>
               <select value={priority} onChange={(e) => setPriority(e.target.value)} className={inputClass}>
                 <option value="Low">Low</option>
                 <option value="Medium">Medium</option>
@@ -163,7 +163,7 @@ export const MissionsPage = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">ASSIGN TACTICAL UNIT</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">ASSIGN TACTICAL UNIT</label>
               <select value={selectedUnit} onChange={(e) => setSelectedUnit(e.target.value)} className={inputClass}>
                 <option value="">No unit assigned</option>
                 {units.map(u => (
@@ -173,7 +173,7 @@ export const MissionsPage = () => {
             </div>
 
             <div>
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">ASSIGNED UNIT ROLE</label>
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">ASSIGNED UNIT ROLE</label>
               <select value={unitRole} onChange={(e) => setUnitRole(e.target.value)} className={inputClass}>
                 <option value="Primary Attack">Primary Attack</option>
                 <option value="Defense">Defense Screen</option>
@@ -183,12 +183,12 @@ export const MissionsPage = () => {
             </div>
 
             <div className="col-span-3">
-              <label className="block text-[11px] text-accent-cyan mb-1 font-semibold">STRATEGIC OBJECTIVE STATEMENT</label>
-              <textarea required value={objective} onChange={(e) => setObjective(e.target.value)} placeholder="Provide concrete objectives..." className={`${inputClass} h-[60px] py-2 resize-none`} />
+              <label className="block text-[10px] text-zinc-400 mb-1.5 font-semibold">STRATEGIC OBJECTIVE STATEMENT</label>
+              <textarea required value={objective} onChange={(e) => setObjective(e.target.value)} placeholder="Provide concrete objectives..." className={`${inputClass} h-[70px] py-2 resize-none`} />
             </div>
 
             <div className="col-span-3 flex justify-end">
-              <button type="submit" disabled={loading} className="bg-accent-cyan border-none text-bg-main px-6 py-2.5 rounded cursor-pointer font-bold text-[13px] uppercase font-sans">
+              <button type="submit" disabled={loading} className="bg-zinc-100 border border-zinc-100 text-zinc-900 hover:bg-zinc-200 hover:border-zinc-200 px-5 py-2 rounded-lg cursor-pointer font-bold text-[12px] uppercase tracking-wider transition-colors duration-150">
                 {loading ? 'Submitting...' : 'File Mission Directive'}
               </button>
             </div>
@@ -199,73 +199,75 @@ export const MissionsPage = () => {
       {/* Missions Grid List */}
       <div className="grid grid-cols-[repeat(auto-fill,minmax(320px,1fr))] gap-5">
         {missions.length === 0 ? (
-          <div className="col-span-3 bg-bg-card border border-border-cyan rounded p-9 text-center text-white/30 text-[13px] font-mono select-none">
+          <div className="col-span-3 bg-zinc-900 border border-zinc-800 rounded-lg p-8 text-center text-zinc-500 text-[12.5px] font-mono select-none">
             NO ACTIVE OR ARCHIVED MISSIONS FOUND
           </div>
         ) : (
           missions.map(mission => (
             <DataCard key={mission.id} title={mission.name} className="gap-3">
-              <div className="flex justify-between items-center select-none">
-                <span className="text-[11px] font-mono text-white/40">M-ID: {mission.id}</span>
-                <div className="flex gap-2">
-                  <span className="text-[11px] font-semibold text-accent-cyan uppercase">{mission.priority}</span>
+              <div className="flex justify-between items-center select-none mb-1">
+                <span className="text-[10.5px] font-mono text-zinc-500">M-ID: {mission.id}</span>
+                <div className="flex gap-2 items-center">
+                  <span className={`text-[10px] font-semibold uppercase ${
+                    mission.priority === 'Critical' || mission.priority === 'High' ? 'text-red-400' : 'text-zinc-400'
+                  }`}>{mission.priority}</span>
                   <StatusBadge status={mission.status} />
                 </div>
               </div>
 
-              <div className="pb-2.5 border-b border-white/5">
-                <div className="text-[11px] text-accent-cyan mb-1 font-semibold uppercase tracking-wider">OBJECTIVE</div>
-                <div className="text-[13px] leading-relaxed text-white/80">{mission.objective}</div>
+              <div className="pb-3.5 border-b border-zinc-800">
+                <div className="text-[9.5px] text-zinc-500 mb-1 font-bold uppercase tracking-wider">OBJECTIVE</div>
+                <div className="text-[12.5px] leading-relaxed text-zinc-300">{mission.objective}</div>
               </div>
 
-              <div>
-                <div className="text-[11px] text-accent-cyan mb-1 font-semibold uppercase tracking-wider select-none">ASSIGNED FORCE ASSETS</div>
-                <div className="text-[12px] font-mono">
+              <div className="py-1">
+                <div className="text-[9.5px] text-zinc-500 mb-1.5 font-bold uppercase tracking-wider select-none">ASSIGNED FORCE ASSETS</div>
+                <div className="text-[11.5px] font-mono">
                   {mission.units && mission.units.length > 0 ? (
                     mission.units.map(mu => {
                       const matchedUnit = units.find(u => u.id === mu.unitId);
                       return (
-                        <div key={mu.id} className="flex justify-between py-0.5">
-                          <span className="text-white">{matchedUnit ? matchedUnit.name : `Unit #${mu.unitId}`}</span>
-                          <span className="text-white/30">[{mu.role}]</span>
+                        <div key={mu.id} className="flex justify-between py-1 border-b border-zinc-800/20 last:border-b-0">
+                          <span className="text-zinc-200">{matchedUnit ? matchedUnit.name : `Unit #${mu.unitId}`}</span>
+                          <span className="text-zinc-500">[{mu.role}]</span>
                         </div>
                       );
                     })
                   ) : (
-                    <span className="text-white/30 italic">No force assets currently attached</span>
+                    <span className="text-zinc-600 italic">No force assets currently attached</span>
                   )}
                 </div>
               </div>
 
-              <div className="text-[11px] text-white/30 font-mono flex justify-between mt-1.5 select-none">
+              <div className="text-[10.5px] text-zinc-500 font-mono flex justify-between mt-2 select-none border-t border-zinc-850 pt-2.5">
                 <span>START: {new Date(mission.startDate).toISOString().substring(0, 10)}</span>
                 {mission.endDate && <span>END: {new Date(mission.endDate).toISOString().substring(0, 10)}</span>}
               </div>
 
               {/* Status transition actions */}
               {isCommanderOrAdmin && mission.status !== 'Completed' && mission.status !== 'Failed' && (
-                <div className="flex gap-2 mt-2 border-t border-white/5 pt-3">
+                <div className="flex gap-2 mt-3 border-t border-zinc-800 pt-3">
                   {mission.status === 'Planning' && (
                     <button
                       onClick={() => updateStatus(mission.id, 'Active')}
-                      className="flex-1 h-7 bg-transparent border rounded cursor-pointer text-[11px] font-semibold uppercase inline-flex items-center justify-center gap-1 transition-all duration-200 border-accent-cyan text-accent-cyan hover:bg-accent-cyan hover:text-bg-main"
+                      className="flex-1 h-8 bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 rounded-md cursor-pointer text-[11px] font-semibold uppercase inline-flex items-center justify-center gap-1.5 transition-all duration-150 text-sky-400 hover:text-sky-300"
                     >
-                      <Play className="w-3 h-3" /> Activate
+                      <Play className="w-3.5 h-3.5" /> Activate
                     </button>
                   )}
                   {mission.status === 'Active' && (
                     <>
                       <button
                         onClick={() => updateStatus(mission.id, 'Completed')}
-                        className="flex-1 h-7 bg-transparent border rounded cursor-pointer text-[11px] font-semibold uppercase inline-flex items-center justify-center gap-1 transition-all duration-200 border-accent-green text-accent-green hover:bg-accent-green hover:text-bg-main"
+                        className="flex-1 h-8 bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 rounded-md cursor-pointer text-[11px] font-semibold uppercase inline-flex items-center justify-center gap-1.5 transition-all duration-150 text-emerald-500 hover:text-emerald-400"
                       >
-                        <CheckCircle className="w-3 h-3" /> Succeed
+                        <CheckCircle className="w-3.5 h-3.5" /> Succeed
                       </button>
                       <button
                         onClick={() => updateStatus(mission.id, 'Failed')}
-                        className="flex-1 h-7 bg-transparent border rounded cursor-pointer text-[11px] font-semibold uppercase inline-flex items-center justify-center gap-1 transition-all duration-200 border-accent-red text-accent-red hover:bg-accent-red hover:text-white"
+                        className="flex-1 h-8 bg-zinc-950 hover:bg-zinc-800 border border-zinc-800 rounded-md cursor-pointer text-[11px] font-semibold uppercase inline-flex items-center justify-center gap-1.5 transition-all duration-150 text-red-400 hover:text-red-300"
                       >
-                        <XCircle className="w-3 h-3" /> Abort
+                        <XCircle className="w-3.5 h-3.5" /> Abort
                       </button>
                     </>
                   )}
@@ -279,6 +281,6 @@ export const MissionsPage = () => {
   );
 };
 
-const inputClass = "w-full h-9 bg-bg-input border border-border-cyan rounded text-white px-3 box-border outline-none text-[13px] font-sans focus:border-accent-cyan";
+const inputClass = "w-full h-9 bg-zinc-950 border border-zinc-800 rounded-md text-zinc-200 px-3 box-border outline-none text-[13px] font-sans focus:border-zinc-700 transition-colors duration-150";
 
 export default MissionsPage;

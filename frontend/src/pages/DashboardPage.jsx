@@ -85,28 +85,27 @@ export const DashboardPage = () => {
 
     assets.forEach(asset => {
       const isFriendly = asset.status === 'Active';
-      const color = isFriendly ? '#00d4ff' : '#ff3366';
+      const color = isFriendly ? '#0ea5e9' : '#ef4444'; // Sky blue / Red
       
       const customIcon = L.divIcon({
         className: 'custom-div-icon',
         html: `<div style="
-          width: 14px;
-          height: 14px;
+          width: 12px;
+          height: 12px;
           border-radius: 50%;
           background-color: ${color};
           border: 2px solid #ffffff;
-          box-shadow: 0 0 6px ${color};
         "></div>`,
-        iconSize: [14, 14],
-        iconAnchor: [7, 7]
+        iconSize: [12, 12],
+        iconAnchor: [6, 6]
       });
 
       const popupContent = `
-        <div style="font-family: var(--font-sans); color: #0a1628; padding: 4px;">
-          <h4 style="margin: 0 0 4px 0; font-size: 13px;">${asset.name}</h4>
-          <p style="margin: 0 0 2px 0; font-size: 11px;"><b>Type:</b> ${asset.type}</p>
-          <p style="margin: 0 0 2px 0; font-size: 11px;"><b>Speed:</b> ${asset.speed} knots</p>
-          <p style="margin: 0; font-size: 11px;"><b>Fuel:</b> ${asset.fuel}%</p>
+        <div style="font-family: var(--font-sans); color: #f4f4f5; padding: 4px; min-width: 130px;">
+          <h4 style="margin: 0 0 6px 0; font-size: 12px; font-weight: 600; border-b: 1px solid #27272a; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">${asset.name}</h4>
+          <p style="margin: 0 0 3px 0; font-size: 11px; color: #a1a1aa;"><span style="color: #71717a;">Type:</span> ${asset.type}</p>
+          <p style="margin: 0 0 3px 0; font-size: 11px; color: #a1a1aa;"><span style="color: #71717a;">Speed:</span> ${asset.speed} kt</p>
+          <p style="margin: 0; font-size: 11px; color: #a1a1aa;"><span style="color: #71717a;">Fuel:</span> ${asset.fuel}%</p>
         </div>
       `;
 
@@ -137,11 +136,11 @@ export const DashboardPage = () => {
       if (marker) {
         marker.setLatLng([updatedAsset.lat, updatedAsset.lng]);
         marker.setPopupContent(`
-          <div style="font-family: var(--font-sans); color: #0a1628; padding: 4px;">
-            <h4 style="margin: 0 0 4px 0; font-size: 13px;">${updatedAsset.name}</h4>
-            <p style="margin: 0 0 2px 0; font-size: 11px;"><b>Type:</b> ${updatedAsset.type}</p>
-            <p style="margin: 0 0 2px 0; font-size: 11px;"><b>Speed:</b> ${updatedAsset.speed} knots</p>
-            <p style="margin: 0; font-size: 11px;"><b>Fuel:</b> ${updatedAsset.fuel}%</p>
+          <div style="font-family: var(--font-sans); color: #f4f4f5; padding: 4px; min-width: 130px;">
+            <h4 style="margin: 0 0 6px 0; font-size: 12px; font-weight: 600; border-b: 1px solid #27272a; padding-bottom: 4px; text-transform: uppercase; letter-spacing: 0.05em;">${updatedAsset.name}</h4>
+            <p style="margin: 0 0 3px 0; font-size: 11px; color: #a1a1aa;"><span style="color: #71717a;">Type:</span> ${updatedAsset.type}</p>
+            <p style="margin: 0 0 3px 0; font-size: 11px; color: #a1a1aa;"><span style="color: #71717a;">Speed:</span> ${updatedAsset.speed} kt</p>
+            <p style="margin: 0; font-size: 11px; color: #a1a1aa;"><span style="color: #71717a;">Fuel:</span> ${updatedAsset.fuel}%</p>
           </div>
         `);
       }
@@ -161,86 +160,86 @@ export const DashboardPage = () => {
   }, []);
 
   return (
-    <div className="grid grid-rows-[auto_1fr] h-full gap-5 overflow-hidden p-6 box-border">
+    <div className="grid grid-rows-[auto_1fr] h-full gap-6 overflow-hidden p-6 box-border bg-zinc-950">
       {/* Top Stats Cards */}
       <div className="grid grid-cols-5 gap-4">
         <DataCard title="Global Readiness">
           <div className="flex items-center justify-between mt-1 select-none">
-            <span className="text-3xl font-bold font-mono text-accent-green">
+            <span className="text-2xl font-bold font-mono text-emerald-500">
               {stats.readinessIndex}%
             </span>
-            <Activity className="text-accent-green w-8 h-8" />
+            <Activity className="text-emerald-500 w-5 h-5" />
           </div>
         </DataCard>
 
         <DataCard title="Global Threat Level">
           <div className="flex items-center justify-between mt-1 select-none">
-            <span className={`text-3xl font-bold font-mono ${stats.globalThreatLevel > 50 ? 'text-accent-red' : 'text-accent-amber'}`}>
+            <span className={`text-2xl font-bold font-mono ${stats.globalThreatLevel > 50 ? 'text-red-500' : 'text-amber-500'}`}>
               {stats.globalThreatLevel}%
             </span>
-            <ShieldAlert className={`${stats.globalThreatLevel > 50 ? 'text-accent-red' : 'text-accent-amber'} w-8 h-8`} />
+            <ShieldAlert className={`${stats.globalThreatLevel > 50 ? 'text-red-500' : 'text-amber-500'} w-5 h-5`} />
           </div>
         </DataCard>
 
         <DataCard title="Active Assets">
           <div className="flex items-center justify-between mt-1 select-none">
-            <span className="text-3xl font-bold font-mono text-accent-cyan">
-              {stats.assets.active} <span className="text-[14px] text-white/40">/ {stats.assets.total}</span>
+            <span className="text-2xl font-bold font-mono text-sky-500">
+              {stats.assets.active} <span className="text-[12px] text-zinc-500 font-normal">/ {stats.assets.total}</span>
             </span>
-            <Shield className="text-accent-cyan w-8 h-8" />
+            <Shield className="text-sky-500 w-5 h-5" />
           </div>
         </DataCard>
 
         <DataCard title="Operational Domains">
           <div className="flex items-center justify-between mt-1 select-none">
-            <span className="text-3xl font-bold font-mono text-white">
+            <span className="text-2xl font-bold font-mono text-zinc-100">
               {stats.domains}
             </span>
-            <Crosshair className="text-white/40 w-8 h-8" />
+            <Crosshair className="text-zinc-500 w-5 h-5" />
           </div>
         </DataCard>
 
         <DataCard title="Total Units">
           <div className="flex items-center justify-between mt-1 select-none">
-            <span className="text-3xl font-bold font-mono text-white">
+            <span className="text-2xl font-bold font-mono text-zinc-100">
               {stats.units}
             </span>
-            <HelpCircle className="text-white/40 w-8 h-8" />
+            <HelpCircle className="text-zinc-500 w-5 h-5" />
           </div>
         </DataCard>
       </div>
 
       {/* Main Grid: Map & Alerts */}
-      <div className="grid grid-cols-3 gap-5 overflow-hidden">
+      <div className="grid grid-cols-3 gap-6 overflow-hidden">
         {/* Map Panel */}
-        <div className="col-span-2 bg-bg-card border border-border-cyan rounded flex flex-col overflow-hidden relative">
-          <div className="px-4 py-3 border-b border-white/5 text-[12px] font-semibold uppercase text-accent-cyan tracking-wider select-none font-sans">
+        <div className="col-span-2 bg-zinc-900 border border-zinc-800 rounded-lg flex flex-col overflow-hidden relative">
+          <div className="px-5 py-3.5 border-b border-zinc-800 text-[10px] font-bold uppercase text-zinc-400 tracking-wider select-none font-sans">
             TACTICAL COMMON OPERATING PICTURE (COP)
           </div>
           <div ref={mapContainerRef} className="flex-1 z-0" />
         </div>
 
         {/* Live Alerts Feed Panel */}
-        <div className="bg-bg-card border border-border-cyan rounded flex flex-col overflow-hidden">
-          <div className="px-4 py-3 border-b border-white/5 text-[12px] font-semibold uppercase text-accent-cyan tracking-wider select-none font-sans">
+        <div className="bg-zinc-900 border border-zinc-800 rounded-lg flex flex-col overflow-hidden">
+          <div className="px-5 py-3.5 border-b border-zinc-800 text-[10px] font-bold uppercase text-zinc-400 tracking-wider select-none font-sans">
             LIVE ALERTS TICKER
           </div>
-          <div className="flex-1 overflow-y-auto p-4 flex flex-col gap-3">
+          <div className="flex-1 overflow-y-auto p-5 flex flex-col gap-3">
             {alerts.length === 0 ? (
-              <div className="text-white/30 text-center py-6 text-[13px] font-mono select-none">
+              <div className="text-zinc-500 text-center py-8 text-[12px] font-mono select-none">
                 NO SECURITY ALERTS DETECTED
               </div>
             ) : (
               alerts.map(alert => (
-                <div key={alert.id} className={`p-3 bg-bg-input/60 rounded-r border-l-4 ${
-                  alert.severity === 'Critical' || alert.severity === 'High' ? 'border-accent-red' : 'border-accent-amber'
+                <div key={alert.id} className={`p-4 bg-zinc-950/60 border border-zinc-850 rounded-lg border-l-4 ${
+                  alert.severity === 'Critical' || alert.severity === 'High' ? 'border-l-red-500' : 'border-l-amber-500'
                 }`}>
-                  <div className="flex justify-between mb-1 select-none">
-                    <span className="font-semibold text-white text-[13px]">{alert.type}</span>
+                  <div className="flex justify-between items-start mb-1 select-none">
+                    <span className="font-semibold text-zinc-200 text-[12px]">{alert.type}</span>
                     <StatusBadge status={alert.severity} />
                   </div>
-                  <div className="text-white/70 text-[12px] leading-relaxed">{alert.message}</div>
-                  <div className="text-[10px] font-mono text-white/30 mt-1.5 text-right select-none">
+                  <div className="text-zinc-400 text-[12px] leading-relaxed">{alert.message}</div>
+                  <div className="text-[9px] font-mono text-zinc-600 mt-2 text-right select-none">
                     {new Date(alert.createdAt).toISOString().replace('T', ' ').substring(0, 19)}
                   </div>
                 </div>

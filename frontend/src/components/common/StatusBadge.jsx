@@ -4,25 +4,25 @@ export const StatusBadge = ({ status }) => {
   const getTailwindClasses = (stat) => {
     const s = stat.toLowerCase();
     if (['active', 'operational', 'nominal', 'up'].includes(s)) {
-      return 'bg-accent-green/10 border-accent-green/20 text-accent-green';
+      return 'bg-emerald-500/10 border-emerald-500/20 text-emerald-500';
     }
     if (['planning', 'standby', 'deployed'].includes(s)) {
-      return 'bg-accent-cyan/10 border-accent-cyan/20 text-accent-cyan';
+      return 'bg-sky-500/10 border-sky-500/20 text-sky-500';
     }
     if (['warning', 'maintenance'].includes(s)) {
-      return 'bg-accent-amber/10 border-accent-amber/20 text-accent-amber';
+      return 'bg-amber-500/10 border-amber-500/20 text-amber-500';
     }
     if (['failed', 'offline', 'damage', 'critical', 'down'].includes(s)) {
-      return 'bg-accent-red/10 border-accent-red/20 text-accent-red';
+      return 'bg-red-500/10 border-red-500/20 text-red-500';
     }
     // neutralized, completed, lost, retired
-    return 'bg-white/5 border-white/10 text-white/50';
+    return 'bg-zinc-800 border-zinc-700 text-zinc-400';
   };
 
   const badgeClass = getTailwindClasses(status);
 
   return (
-    <span className={`text-[11px] font-mono font-semibold border px-2 py-0.5 rounded inline-block text-center uppercase tracking-wide ${badgeClass}`}>
+    <span className={`text-[10px] font-mono font-semibold border px-2 py-0.5 rounded-md inline-block text-center uppercase tracking-wide ${badgeClass}`}>
       {status}
     </span>
   );

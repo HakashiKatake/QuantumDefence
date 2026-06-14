@@ -5,20 +5,20 @@ export const SeverityIndicator = ({ severity }) => {
     const s = sev.toLowerCase();
     switch (s) {
       case 'critical':
-        return 'bg-accent-red/15 border-accent-red text-accent-red blink-critical';
+        return 'bg-red-500/10 border-red-500/20 text-red-500 blink-critical';
       case 'high':
-        return 'bg-accent-amber/15 border-accent-amber text-accent-amber';
+        return 'bg-amber-500/10 border-amber-500/20 text-amber-500';
       case 'medium':
-        return 'bg-accent-cyan/15 border-accent-cyan text-accent-cyan';
+        return 'bg-sky-500/10 border-sky-500/20 text-sky-500';
       default: // low
-        return 'bg-white/10 border-white/20 text-white/60';
+        return 'bg-zinc-800/50 border-zinc-800 text-zinc-400';
     }
   };
 
   const indicatorClass = getTailwindClasses(severity);
 
   return (
-    <span className={`text-[11px] font-mono font-bold border px-2 py-0.5 rounded-xs inline-block text-center uppercase tracking-wide ${indicatorClass}`}>
+    <span className={`text-[10px] font-mono font-bold border px-2 py-0.5 rounded-md inline-block text-center uppercase tracking-wide ${indicatorClass}`}>
       {severity}
     </span>
   );

@@ -43,72 +43,74 @@ export const AlertsPage = () => {
   };
 
   return (
-    <div className="page-container flex flex-col gap-5">
+    <div className="page-container flex flex-col gap-6">
       <div className="select-none">
-        <h2 className="m-0 text-[22px] font-bold text-white">Real-Time Security Alerts</h2>
-        <p className="text-white/40 text-[13px] mt-1">Acknowledge warning indicators and security notifications.</p>
+        <h2 className="m-0 text-[20px] font-bold text-zinc-100">Real-Time Security Alerts</h2>
+        <p className="text-zinc-400 text-[12px] mt-1">Acknowledge warning indicators and security notifications.</p>
       </div>
 
-      <div className="bg-bg-card border border-border-cyan rounded overflow-hidden">
-        <div className="px-4 py-4 border-b border-white/5 text-[12px] font-semibold text-accent-cyan tracking-wider uppercase select-none font-sans">
+      <div className="bg-zinc-900 border border-zinc-800 rounded-lg overflow-hidden">
+        <div className="px-5 py-4 border-b border-zinc-800 text-[10px] font-bold text-zinc-400 tracking-wider uppercase select-none font-sans">
           ALERT INCIDENT REGISTER
         </div>
 
-        <table className="w-full border-collapse text-left">
-          <thead>
-            <tr className="border-b border-white/5 text-[11px] text-white/40 uppercase select-none">
-              <th className="px-4 py-3">Alert ID</th>
-              <th className="px-4 py-3">Incident Type</th>
-              <th className="px-4 py-3">Severity</th>
-              <th className="px-4 py-3">Details Message</th>
-              <th className="px-4 py-3">Trigger Time</th>
-              <th className="px-4 py-3">Status</th>
-              <th className="px-4 py-3 text-right">Actions</th>
-            </tr>
-          </thead>
-          <tbody>
-            {alerts.length === 0 ? (
-              <tr>
-                <td colSpan="7" className="px-4 py-6 text-center text-white/30 text-[13px] font-mono select-none">
-                  NO PENDING OR ARCHIVED ALERTS DETECTED
-                </td>
+        <div className="overflow-x-auto">
+          <table className="w-full border-collapse text-left">
+            <thead>
+              <tr className="border-b border-zinc-800 text-[10px] text-zinc-400 uppercase select-none">
+                <th className="px-5 py-3.5 font-semibold">Alert ID</th>
+                <th className="px-5 py-3.5 font-semibold">Incident Type</th>
+                <th className="px-5 py-3.5 font-semibold">Severity</th>
+                <th className="px-5 py-3.5 font-semibold">Details Message</th>
+                <th className="px-5 py-3.5 font-semibold">Trigger Time</th>
+                <th className="px-5 py-3.5 font-semibold">Status</th>
+                <th className="px-5 py-3.5 text-right font-semibold">Actions</th>
               </tr>
-            ) : (
-              alerts.map(alert => (
-                <tr key={alert.id} className={`border-b border-white/2 text-[13px] transition-colors duration-150 ${
-                  alert.acknowledged ? 'bg-transparent' : 'bg-accent-red/2'
-                }`}>
-                  <td className="px-4 py-3 font-mono">A-{alert.id}</td>
-                  <td className="px-4 py-3 font-semibold text-white">{alert.type}</td>
-                  <td className="px-4 py-3"><StatusBadge status={alert.severity} /></td>
-                  <td className="px-4 py-3 text-white/80">{alert.message}</td>
-                  <td className="px-4 py-3 text-[12px]">{new Date(alert.createdAt).toLocaleString()}</td>
-                  <td className="px-4 py-3">
-                    {alert.acknowledged ? (
-                      <span className="text-white/40 flex items-center gap-1 text-[11px] font-semibold select-none">
-                        <Check className="w-3.5 h-3.5 text-accent-green" /> ACKNOWLEDGED
-                      </span>
-                    ) : (
-                      <span className="text-accent-amber flex items-center gap-1 text-[11px] font-semibold select-none">
-                        <Info className="w-3.5 h-3.5" /> UNACKNOWLEDGED
-                      </span>
-                    )}
-                  </td>
-                  <td className="px-4 py-3 text-right">
-                    {!alert.acknowledged && (
-                      <button
-                        onClick={() => acknowledgeAlert(alert.id)}
-                        className="bg-transparent border border-accent-cyan text-accent-cyan px-2.5 py-1 rounded cursor-pointer text-[11px] font-semibold uppercase transition-all duration-200 hover:bg-accent-cyan hover:text-bg-main"
-                      >
-                        Acknowledge
-                      </button>
-                    )}
+            </thead>
+            <tbody>
+              {alerts.length === 0 ? (
+                <tr>
+                  <td colSpan="7" className="px-5 py-8 text-center text-zinc-500 text-[12px] font-mono select-none">
+                    NO PENDING OR ARCHIVED ALERTS DETECTED
                   </td>
                 </tr>
-              ))
-            )}
-          </tbody>
-        </table>
+              ) : (
+                alerts.map(alert => (
+                  <tr key={alert.id} className={`border-b border-zinc-800/40 text-[12.5px] transition-colors duration-150 ${
+                    alert.acknowledged ? 'text-zinc-400 hover:bg-zinc-850/10' : 'text-zinc-200 bg-red-500/[0.02] hover:bg-red-500/[0.04]'
+                  }`}>
+                    <td className="px-5 py-3.5 font-mono text-zinc-500">A-{alert.id}</td>
+                    <td className="px-5 py-3.5 font-semibold text-zinc-100">{alert.type}</td>
+                    <td className="px-5 py-3.5"><StatusBadge status={alert.severity} /></td>
+                    <td className="px-5 py-3.5 text-zinc-300">{alert.message}</td>
+                    <td className="px-5 py-3.5 text-[11.5px] text-zinc-500 font-mono">{new Date(alert.createdAt).toLocaleString()}</td>
+                    <td className="px-5 py-3.5">
+                      {alert.acknowledged ? (
+                        <span className="text-zinc-500 flex items-center gap-1 text-[10px] font-semibold select-none">
+                          <Check className="w-3.5 h-3.5 text-emerald-500" /> ACKNOWLEDGED
+                        </span>
+                      ) : (
+                        <span className="text-amber-500 flex items-center gap-1 text-[10px] font-semibold select-none">
+                          <Info className="w-3.5 h-3.5" /> UNACKNOWLEDGED
+                        </span>
+                      )}
+                    </td>
+                    <td className="px-5 py-3.5 text-right">
+                      {!alert.acknowledged && (
+                        <button
+                          onClick={() => acknowledgeAlert(alert.id)}
+                          className="bg-zinc-950 border border-zinc-800 hover:bg-zinc-800 hover:border-zinc-700 text-zinc-300 hover:text-zinc-100 px-3 py-1.5 rounded-lg cursor-pointer text-[11px] font-semibold uppercase transition-all duration-150"
+                        >
+                          Acknowledge
+                        </button>
+                      )}
+                    </td>
+                  </tr>
+                ))
+              )}
+            </tbody>
+          </table>
+        </div>
       </div>
     </div>
   );
