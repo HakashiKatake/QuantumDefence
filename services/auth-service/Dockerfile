@@ -5,7 +5,7 @@ COPY package*.json ./
 RUN npm ci
 COPY . .
 RUN npx prisma generate
-RUN npm prune --omit=dev
+RUN npm prune --omit=dev && rm -rf node_modules/@prisma/engines node_modules/prisma
 
 # Stage 2: Minimal Runtime Environment
 FROM node:22-alpine AS runner
