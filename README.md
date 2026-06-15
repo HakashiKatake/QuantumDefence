@@ -592,6 +592,7 @@ Demonstration screenshots are located in `docs/screenshots/`.
 8. **[Jenkins CI/CD Pipeline Run](docs/screenshots/jenkins_pipeline_run.png)**: Illustrates the successful build and deploy pipeline stages.
 9. **[Grafana Metrics Monitoring](docs/screenshots/grafana_alerts.png)**: Details container memory, CPU utilization, and HTTP request throughput.
 10. **[Kibana Logging Query](docs/screenshots/elk_kibana_logs.png)**: Queries structured JSON logs from microservices.
+11. **[AWS Production Architecture](docs/screenshots/aws_architecture.png)**: Visualizes the cloud infrastructure, VPC layout, EKS cluster, ECR registries, RDS PostgreSQL database, S3 backups, and CloudWatch integration.
 
 ### 1. Secure Login Interface
 ![Secure Login Interface](docs/screenshots/login_page.png)
@@ -622,3 +623,6 @@ Demonstration screenshots are located in `docs/screenshots/`.
 
 ### 10. Kibana Logging Query
 ![Kibana Logging Query](docs/screenshots/elk_kibana_logs.png)
+
+### 11. AWS Production Architecture
+![AWS Production Architecture](docs/screenshots/aws_architecture.png)
