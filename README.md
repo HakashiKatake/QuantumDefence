@@ -3,6 +3,185 @@
 
 ---
 
+## 📊 Project Overview
+
+Project QuantumDefense is a production-grade, cloud-native Command and Control (C2) platform that consolidates tactical operations across **Land, Air, Naval, Cyber, and Space** military domains into a unified interface. The system addresses the critical need for real-time situational awareness, threat detection, and mission coordination in modern defense operations.
+
+---
+
+## 🎯 Problem Statement
+
+Traditional military command centers suffer from:
+
+1. **Fragmented Legacy Infrastructure**: Disparate systems with incompatible protocols
+2. **Information Silos**: Delayed threat identification due to isolated data sources
+3. **Manual Processes**: Time-consuming certificate rotation, manual deployments
+4. **Security Vulnerabilities**: Hardcoded credentials, plaintext secrets in configs
+5. **Operational Blind Spots**: Lack of real-time telemetry from deployed assets
+6. **Cost Inefficiencies**: Multiple redundant database instances, manual scaling
+7. **No Disaster Recovery**: Single points of failure with extended recovery times
+
+---
+
+## 💡 Proposed Solution
+
+The QuantumDefense platform delivers:
+
+| Capability | Implementation |
+|---|---|
+| **Unified Dashboard** | React 19 + Leaflet.js map aggregating all domain data |
+| **Real-time Telemetry** | WebSocket (Socket.IO) pushing updates every 3 seconds |
+| **Automated Threat Assessment** | Classification engine with severity scoring (<500ms) |
+| **Zero-Trust Security** | HashiCorp Vault dynamic secret retrieval at runtime |
+| **CI/CD Automation** | Jenkins pipeline with auto-build, test, deploy |
+| **Infrastructure as Code** | Terraform modules for reproducible AWS deployments |
+| **Observability Stack** | ELK for logs, Prometheus/Grafana for metrics |
+| **Disaster Recovery** | Cross-region failover with RTO < 15 min, RPO < 5 min |
+
+---
+
+## ⚖️ Solution Tradeoffs
+
+| Decision | Tradeoff | Rationale |
+|---|---|---|
+| **Shared PostgreSQL + Schemas** | One DB vs. 4 DBs | Reduces cost from $400+/mo to ~$100/mo while maintaining isolation |
+| **WebSockets vs Polling** | Persistent connections | 90%+ reduction in network traffic vs 3s polling |
+| **JWT in Microservices** | Distributed vs Centralized auth | Independent RBAC per service, no single auth bottleneck |
+| **ECR vs Docker Hub** | Vendor lock-in | Required for EKS integration, private images |
+| **Helm Vault vs Managed** | Manual management overhead | Cost optimization for development/free-tier |
+
+---
+
+## 🛠️ Technology Stack
+
+| Layer | Technology | Version | Purpose |
+|---|---|---|---|
+| **Frontend** | React | 19 | UI framework |
+| **Build** | Vite | 6 | Fast bundler |
+| **Styling** | Tailwind CSS | 4 | Utility-first CSS |
+| **Backend** | Node.js | 22 LTS | Runtime |
+| **Framework** | Express | 4.x | HTTP server |
+| **Database** | PostgreSQL | 18 / 16 | Relational store |
+| **ORM** | Prisma | 6.x | Schema management |
+| **Auth** | JWT | - | Token auth |
+| **Real-time** | Socket.IO | 4.x | WebSockets |
+| **Container** | Docker | - | Containerization |
+| **Orchestration** | Kubernetes | 1.36 | Container mgmt |
+| **Cloud** | AWS | - | EKS, RDS, ECR |
+| **Secrets** | HashiCorp Vault | - | Secret management |
+| **CI/CD** | Jenkins | LTS | Pipeline automation |
+| **Monitoring** | Prometheus + Grafana | latest | Metrics & dashboards |
+| **Logging** | ELK Stack | 8.x | Centralized logs |
+| **Infrastructure** | Terraform | 1.x | IaC |
+
+---
+
+## 📦 Module Description
+
+| Module | Path | Responsibilities | Ports |
+|---|---|---|---|
+| **auth-service** | `services/auth-service/` | User registration, login, JWT issuance, audit logging | 4001 |
+| **command-service** | `services/command-service/` | Domain management, asset telemetry, unit tracking, WebSocket server | 4002 |
+| **threat-service** | `services/threat-service/` | Threat detection, alert generation, WebSocket server | 4003 |
+| **mission-service** | `services/mission-service/` | Mission directives, state machine, scheduling | 4004 |
+| **frontend** | `frontend/` | React SPA with Leaflet map, dashboards, forms | 3000/80 |
+| **gateway** | `gateway/` | Nginx reverse proxy, WebSocket upgrades, SSL termination | 80 |
+| **vault** | `vault/` | Secret storage, dynamic credential retrieval, policy enforcement | 8200 |
+
+---
+
+## 🗄️ Database Design
+
+```mermaid
+erDiagram
+    AUTH_SCHEMA {
+        string User_id PK
+        string name
+        string email
+        string password
+        string role
+    }
+    AUTH_SCHEMA ||--o{ AuditLog : has
+    AuthLog {
+        string id PK
+        string userId FK
+        string action
+        string resource
+        string details
+    }
+    
+    COMMAND_SCHEMA {
+        string Domain_id PK
+        string name
+        string status
+        string description
+    }
+    COMMAND_SCHEMA ||--o{ MilitaryUnit : contains
+    COMMAND_SCHEMA ||--o{ Asset : tracks
+    
+    MilitaryUnit {
+        string id PK
+        string name
+        string callsign
+        string domainId FK
+        string type
+        string status
+        int strength
+        float lat
+        float lng
+    }
+    Asset {
+        string id PK
+        string name
+        string type
+        string unitId FK
+        string domainId FK
+        string status
+        float lat
+        float lng
+        float speed
+        float heading
+        float fuel
+        float ammo
+    }
+    
+    THREAT_SCHEMA {
+        string Threat_id PK
+        string name
+        string level
+        string status
+    }
+    Alert {
+        string id PK
+        string threatId FK
+        string message
+    }
+    
+    MISSION_SCHEMA {
+        string Mission_id PK
+        string name
+        string status
+        datetime startDate
+        datetime endDate
+    }
+```
+
+#### Schema Details
+
+| Schema | Table | Columns |
+|---|---|---|
+| auth | User | id, name, email, password, role, createdAt, updatedAt |
+| auth | Session | id, userId, token, expiresAt |
+| auth | AuditLog | id, userId, action, resource, details, createdAt |
+| command | Domain | id, name, status, description |
+| command | MilitaryUnit | id, name, callsign, domainId, type, status, strength, lat, lng |
+| command | Asset | id, name, type, unitId, domainId, status, lat, lng, speed, heading, fuel, ammo |
+| threat | Threat | id, name, level, status, description |
+| threat | Alert | id, threatId, message, severity, createdAt |
+| mission | Mission | id, name, status, startDate, endDate, description |
+
+---
+
 ## 📋 Executive Summary
 **Project QuantumDefense** is a high-availability, mission-critical Command and Control (C2) platform that I designed and implemented to consolidate and visualize tactical operations across five strategic domains: **Land, Air, Naval, Cyber, and Space**.
 
@@ -626,3 +805,351 @@ Demonstration screenshots are located in `docs/screenshots/`.
 
 ### 11. AWS Production Architecture
 ![AWS Production Architecture](docs/screenshots/aws_architecture.png)
+
+---
+
+## 📜 Complete Scripts Reference & Workflow Documentation
+
+### Local Development Scripts
+
+| Script | Path | Description |
+|---|---|---|
+| `start-dev.sh` | `scripts/start-dev.sh` | Starts all Docker containers (13 services) with `--build` |
+| `stop-dev.sh` | `scripts/stop-dev.sh` | Gracefully stops containers without removing volumes |
+| `clean-dev.sh` | `scripts/clean-dev.sh` | Full cleanup: stop containers, remove volumes, prune images |
+| `db-setup.sh` | `scripts/db-setup.sh` | Launches PostgreSQL/Vault, pushes Prisma schemas, seeds initial data |
+| `db-seed.sh` | `scripts/db-seed.sh` | Production-only: pushes schemas/seeds to RDS via temporary pods |
+| `init-vault.sh` | `vault/scripts/init-vault.sh` | Configures KV v2 engine, writes postgres/jwt secrets, applies policies |
+| `install-deps.sh` | `scripts/install-deps.sh` | Local npm install + Prisma client generation for all services |
+
+### Production Scripts
+
+| Script | Path | Description |
+|---|---|---|
+| `prod-provision.sh` | `scripts/prod-provision.sh` | Full AWS deployment: VPC, EKS, RDS, Jenkins, monitoring, apps |
+| `prod-cleanup.sh` | `scripts/prod-cleanup.sh` | Complete AWS teardown: namespaces, helm, ECR, terraform destroy |
+
+### Local Development Workflow (Step-by-Step)
+
+```bash
+# 1. Prerequisites Check
+# - Docker Desktop running
+# - Node.js 20+ installed
+# - AWS CLI configured (for ECR login during build)
+
+# 2. Install Service Dependencies
+./scripts/install-deps.sh
+# - Runs npm install in each service directory
+# - Generates Prisma clients
+
+# 3. Setup Database & Vault
+./scripts/db-setup.sh
+# - docker compose up -d postgres vault
+# - Waits for PostgreSQL health
+# - Pushes Prisma schemas (auth, command, threat, mission)
+# - Seeds initial military personnel
+# - Inserts default domains/units/assets
+
+# 4. Initialize Vault Secrets
+./vault/scripts/init-vault.sh
+# - Enables KV v2 secrets engine at path 'secret'
+# - Writes: secret/quantum-defense/postgres (credentials)
+# - Writes: secret/quantum-defense/jwt (signing key)
+# - Applies 'c2-policy' (read-only for quantum-defense/*)
+
+# 5. Build All Container Images
+docker compose -f docker/docker-compose.yml build
+
+# 6. Start Full Development Environment
+docker compose -f docker/docker-compose.yml up -d
+# Or use the script:
+./scripts/start-dev.sh
+
+# 7. Verify Running Services
+docker compose -f docker/docker-compose.yml ps
+# Expected: 13 containers running
+
+# 8. Access Points
+# Frontend: http://localhost:3000 (Vite dev) or http://localhost:80 (built)
+# Auth API: http://localhost:4001/api/auth
+# Command API: http://localhost:4002/api/domains
+# Threat API: http://localhost:4003/api/threats
+# Mission API: http://localhost:4004/api/missions
+# Vault: http://localhost:8200 (token: root-dev-token)
+# Prometheus: http://localhost:9090
+# Grafana: http://localhost:3001
+# Kibana: http://localhost:5601
+# Elasticsearch: http://localhost:9200
+
+# 9. Stop Development Environment (Partial)
+./scripts/stop-dev.sh  # Keeps volumes and images
+
+# 10. Full Cleanup (When done)
+./scripts/clean-dev.sh  # Removes everything
+```
+
+### Production Workflow (Step-by-Step)
+
+```bash
+# 1. Configure AWS Credentials
+aws configure
+aws sts get-caller-identity
+
+# 2. Setup Environment Secrets
+cp scripts/secrets.env.example scripts/secrets.env
+# Edit scripts/secrets.env with real values:
+# - VAULT_DEV_TOKEN
+# - DB_PASSWORD
+# - JWT_SECRET
+# - GRAFANA_PASSWORD
+# - JENKINS_AWS_KEY_ID/SECRET
+
+# 3. Deploy Infrastructure
+cd terraform
+terraform init
+terraform workspace select production || terraform workspace new production
+terraform apply -auto-approve
+
+# 4. Configure kubectl
+aws eks update-kubeconfig --name quantum-defense-cluster --region us-east-1
+
+# 5. Deploy Vault via Helm
+helm repo add hashicorp https://helm.releases.hashicorp.com
+helm repo update
+helm upgrade --install vault hashicorp/vault \
+  --set "server.dev.enabled=true" \
+  --set "server.dev.devRootToken=${VAULT_DEV_TOKEN}" \
+  -n quantum-defense --create-namespace
+
+# 6. Wait for Vault
+kubectl wait --for=condition=Ready pod/vault-0 -n quantum-defense --timeout=180s
+
+# 7. Deploy Nginx Ingress
+helm repo add ingress-nginx https://kubernetes.github.io/ingress-nginx
+helm install ingress-nginx ingress-nginx/ingress-nginx -n ingress-nginx --create-namespace
+
+# 8. Build & Push Images to ECR
+./scripts/prod-provision.sh  # Step 5: auto-builds and pushes to ECR
+
+# 9. Apply Kubernetes Manifests
+kubectl apply -f kubernetes/namespace.yaml
+kubectl apply -f kubernetes/app/configmap.yaml
+kubectl apply -f kubernetes/app/ingress.yaml
+kubectl apply -f kubernetes/app/hpa.yaml
+kubectl apply -f kubernetes/app/auth-deployment.yaml
+kubectl apply -f kubernetes/app/command-deployment.yaml
+kubectl apply -f kubernetes/app/threat-deployment.yaml
+kubectl apply -f kubernetes/app/mission-deployment.yaml
+kubectl apply -f kubernetes/app/frontend-deployment.yaml
+
+# 10. Seed Database
+./scripts/db-seed.sh
+
+# 11. Deploy Monitoring Stack
+helm repo add prometheus-community https://prometheus-community.github.io/helm-charts
+helm install monitoring prometheus-community/kube-prometheus-stack \
+  --namespace monitoring --create-namespace \
+  --values monitoring/helm-values.yaml \
+  --set grafana.adminPassword="${GRAFANA_PASSWORD}"
+
+# 12. Teardown (Zero-Cost Guard)
+./scripts/prod-cleanup.sh
+```
+
+### Service Port Reference
+
+| Service | Local Port | Container Port | Database Schema |
+|---|---|---|---|
+| auth-service | 4001 | 4001 | auth |
+| command-service | 4002 | 4002 | command |
+| threat-service | 4003 | 4003 | threat |
+| mission-service | 4004 | 4004 | mission |
+| postgres | 5432 | 5432 | qdefense (multi-schema) |
+| vault | 8200 | 8200 | KV v2 engine |
+| prometheus | 9090 | 9090 | - |
+| grafana | 3001 | 3000 | - |
+| kibana | 5601 | 5601 | - |
+| elasticsearch | 9200 | 9200 | - |
+| logstash | 50000 | 50000 | - |
+| gateway/nginx | 80 | 80 | - |
+
+### Docker Compose Stack Services
+
+```yaml
+# docker/docker-compose.yml services:
+- postgres (postgresql:18-alpine)
+- vault (hashicorp/vault:latest)
+- auth-service (build: services/auth-service)
+- command-service (build: services/command-service)
+- threat-service (build: services/threat-service)
+- mission-service (build: services/mission-service)
+- gateway (nginx:stable-alpine)
+- prometheus (prom/prometheus:latest)
+- grafana (grafana/grafana:latest)
+- elasticsearch (docker.elastic.co/elasticsearch/elasticsearch:8.12.0)
+- logstash (docker.elastic.co/logstash/logstash:8.12.0)
+- kibana (docker.elastic.co/kibana/kibana:8.12.0)
+```
+
+### Vault Secrets Structure
+
+```
+secret/
+└── quantum-defense/
+    ├── postgres
+    │   ├── username: "postgres"
+    │   ├── password: "postgrespassword"
+    │   ├── host: "postgres"
+    │   └── database: "qdefense"
+    └── jwt
+        └── secret: "c2-top-secret-signing-key"
+```
+
+### Default Credentials (Development Only)
+
+- Vault Token: `root-dev-token`
+- JWT Secret: `c2-top-secret-signing-key`
+- PostgreSQL: `postgres` / `postgrespassword`
+- Jenkins Admin: Check initialAdminPassword via SSM after first boot
+
+### Troubleshooting
+
+| Issue | Solution |
+|---|---|
+| Kibana shows "no logs found" | Refresh index pattern in Stack Management, check `qdefense-logs-*` exists |
+| Vault secrets empty | Run `./vault/scripts/init-vault.sh` after containers start |
+| Database connection refused | Wait for PostgreSQL health check, verify `DATABASE_URL` env vars |
+| Docker build fails | Run `npm install` in service directory, check lockfile sync |
+| Vault connection in containers | Verify `VAULT_ADDR=http://vault:8200` (container network) |
+
+---
+
+## 🏗️ Jenkins CI/CD Pipeline Documentation
+
+### Jenkins Architecture
+
+```
+┌─────────────────┐
+│   GitHub Repo   │
+│  (Push webhook) │
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│  Jenkins EC2    │ ├── openjdk-21
+│  t3.small       │ ├── jenkins-lts
+│                 │ ├── docker-ce
+│                 │ ├── nodejs-20
+│                 │ └── kubectl
+└────────┬────────┘
+         │
+         ▼
+┌─────────────────┐
+│   EKS Cluster   │
+│   (2 Node Pods) │
+└────────┬────────┘
+         │
+    ┌────┴────┐
+    ▼         ▼
+ECR Push  K8s Deploy
+```
+
+### Jenkins Pipeline Stages (Jenkinsfile)
+
+Located in `jenkins/Jenkinsfile`:
+
+| Stage | Description |
+|---|---|
+| **Checkout Source** | Clones `main` branch from GitHub |
+| **Static Analysis & Test** | Parallel ESLint on all 5 services (auth, command, threat, mission, frontend) |
+| **Docker Compilation** | Builds all 5 container images locally |
+| **Registry Upload** | ECR authentication + push with AWS credentials binding |
+| **Kubernetes Orchestration** | Applies namespace, configmap, 5 deployments, ingress, HPA; restarts rollouts |
+| **Health Validation** | Waits for all deployments to be ready (90s timeout each) |
+
+### Jenkins Setup (Automated)
+
+`prod-provision.sh` Step 10 performs:
+
+1. Fetches initial admin password via SSM
+2. Installs plugins: `aws-credentials`, `kubernetes-cli`, `pipeline-stage-view`, `git`, `workflow-aggregator`
+3. Creates AWS credentials (`aws-ecr-credentials`)
+4. Creates kubeconfig secret (`eks-kubeconfig`)
+5. Creates pipeline job from `jenkins/Jenkinsfile`
+
+### Manual Jenkins Access
+
+```bash
+# Get Jenkins public IP
+JENKINS_IP=$(terraform -chdir=terraform output -raw jenkins_public_ip)
+echo "Jenkins URL: http://${JENKINS_IP}:8080"
+
+# Get initial admin password (SSM command required)
+aws ssm send-command \
+  --instance-ids $(aws ec2 describe-instances --filters "Name=tag:Name,Values=quantum-defense-jenkins" --query 'Reservations[0].Instances[0].InstanceId' --output text) \
+  --document-name "AWS-RunShellScript" \
+  --parameters 'commands=["cat /var/lib/jenkins/secrets/initialAdminPassword"]'
+
+# Configure webhook (add to GitHub repo settings)
+# http://${JENKINS_IP}:8080/github-webhook/
+```
+
+### Jenkins Credentials Required
+
+| ID | Type | Purpose |
+|---|---|---|
+| `aws-ecr-credentials` | AWS Credentials | ECR push access |
+| `eks-kubeconfig` | Secret File | kubectl cluster access |
+| `VAULT_DEV_TOKEN` | Environment | Vault authentication token |
+
+### Secrets Configuration
+
+Copy `scripts/secrets.env.example` to `scripts/secrets.env` and fill in:
+
+| Variable | Used In | Description |
+|---|---|---|
+| `DB_PASSWORD` | RDS, Vault, Services | PostgreSQL database password |
+| `JWT_SECRET` | Vault, Auth Service | JWT token signing key |
+| `VAULT_DEV_TOKEN` | Vault deployment | Vault dev server root token |
+| `GRAFANA_PASSWORD` | Grafana Helm chart | Grafana admin login |
+| `JENKINS_AWS_KEY_ID` | Jenkins credentials | AWS access key for ECR |
+| `JENKINS_AWS_SECRET` | Jenkins credentials | AWS secret key for ECR |
+
+### API Endpoints Reference
+
+| Service | Endpoint | Method | Description |
+|---|---|---|---|
+| **Auth** | `/api/auth/register` | POST | Register new user with name, email, password, role |
+| **Auth** | `/api/auth/login` | POST | Authenticate user, returns JWT token |
+| **Auth** | `/api/auth/verify` | GET | Internal JWT validation (used by other services) |
+| **Auth** | `/api/auth/health` | GET | Health check endpoint |
+| **Command** | `/api/domains` | GET | List all military domains |
+| **Command** | `/api/assets` | GET | List all assets with telemetry |
+| **Command** | `/api/units` | GET | List all military units |
+| **Command** | `/api/dashboard` | GET | Combined dashboard statistics |
+| **Threat** | `/api/threats` | GET | List detected threats |
+| **Threat** | `/api/alerts` | GET | List security alerts |
+| **Mission** | `/api/missions` | GET | List mission directives |
+| **Mission** | `/api/missions/:id` | PUT | Update mission status |
+
+### WebSocket Endpoints
+
+| Service | Event | Direction | Description |
+|---|---|---|---|
+| Command | `telemetry:update` | Server → Client | Asset position/fuel updates every 3s |
+| Threat | `threat:detected` | Server → Client | Real-time threat alerts |
+
+### Kubernetes Resources
+
+| Resource | File | Description |
+|---|---|---|
+| `namespace.yaml` | `kubernetes/` | Creates `quantum-defense` namespace |
+| `hpa.yaml` | `kubernetes/app/` | Autoscaling for command-service (2-10 pods), threat-service (2-8 pods) |
+| `ingress.yaml` | `kubernetes/app/` | Nginx Ingress routing rules |
+| `configmap.yaml` | `kubernetes/app/` | Environment variables for services |
+| `auth-deployment.yaml` | `kubernetes/app/` | Auth service Deployment + Service (2 replicas) |
+| `command-deployment.yaml` | `kubernetes/app/` | Command service Deployment + Service (2 replicas) |
+| `threat-deployment.yaml` | `kubernetes/app/` | Threat service Deployment + Service (2 replicas) |
+| `mission-deployment.yaml` | `kubernetes/app/` | Mission service Deployment + Service (2 replicas) |
+| `frontend-deployment.yaml` | `kubernetes/app/` | React frontend Deployment (2 replicas) |
+| `monitoring-ingress.yaml` | `monitoring/` | Grafana/Prometheus route paths |
