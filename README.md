@@ -3,12 +3,8 @@
 
 ---
 
-## 📊 Project Overview
-
-Project QuantumDefense is a production-grade, cloud-native Command and Control (C2) platform that consolidates tactical operations across **Land, Air, Naval, Cyber, and Space** military domains into a unified interface. The system addresses the critical need for real-time situational awareness, threat detection, and mission coordination in modern defense operations.
 
 ---
-
 ## 🎯 Problem Statement
 
 Traditional military command centers suffer from:
@@ -23,7 +19,9 @@ Traditional military command centers suffer from:
 
 ---
 
-## 💡 Proposed Solution
+
+---
+## 💡 Proposed Solution & How It Was Solved
 
 The QuantumDefense platform delivers:
 
@@ -40,18 +38,8 @@ The QuantumDefense platform delivers:
 
 ---
 
-## ⚖️ Solution Tradeoffs
-
-| Decision | Tradeoff | Rationale |
-|---|---|---|
-| **Shared PostgreSQL + Schemas** | One DB vs. 4 DBs | Reduces cost from $400+/mo to ~$100/mo while maintaining isolation |
-| **WebSockets vs Polling** | Persistent connections | 90%+ reduction in network traffic vs 3s polling |
-| **JWT in Microservices** | Distributed vs Centralized auth | Independent RBAC per service, no single auth bottleneck |
-| **ECR vs Docker Hub** | Vendor lock-in | Required for EKS integration, private images |
-| **Helm Vault vs Managed** | Manual management overhead | Cost optimization for development/free-tier |
 
 ---
-
 ## 🛠️ Technology Stack
 
 | Layer | Technology | Version | Purpose |
@@ -76,6 +64,8 @@ The QuantumDefense platform delivers:
 
 ---
 
+
+---
 ## 📦 Module Description
 
 | Module | Path | Responsibilities | Ports |
@@ -90,6 +80,33 @@ The QuantumDefense platform delivers:
 
 ---
 
+
+---
+## 📂 Project Directory Structure
+
+```
+QuantumDefence/
+├── services/
+│   ├── auth-service/        # Node.js + Express (Port 4001) - JWT authentication & audits
+│   ├── command-service/     # Node.js + WebSockets (Port 4002) - Telemetry & asset simulation
+│   ├── threat-service/      # Node.js + WebSockets (Port 4003) - Detection & live alerts
+│   └── mission-service/     # Node.js + Express (Port 4004) - Directives state machine
+├── frontend/                # React 19 + Vite 6 Single-Page Application (Tailwind CSS v4)
+├── gateway/                 # Nginx API Gateway routing and WebSocket proxies
+├── docker/                  # Local Docker Compose multi-container templates
+├── terraform/               # Infrastructure provisioning modules (AWS VPC, EKS, RDS, ECR)
+├── kubernetes/              # Production manifests (Deployments, Ingress, HPA, ConfigMaps)
+├── monitoring/              # Prometheus scrapers, alert rules, and Grafana datasources
+├── logging/                 # ELK Logstash pipelines and configurations
+├── vault/                   # HashiCorp Vault access policies and init scripts
+├── docs/                    # Extensive project documentation & screenshots
+└── scripts/                 # Provisioning, seeding, and cleanup scripts
+```
+
+---
+
+
+---
 ## 🗄️ Database Design
 
 ```mermaid
@@ -182,74 +199,8 @@ erDiagram
 
 ---
 
-## 📋 Executive Summary
-**Project QuantumDefense** is a high-availability, mission-critical Command and Control (C2) platform that I designed and implemented to consolidate and visualize tactical operations across five strategic domains: **Land, Air, Naval, Cyber, and Space**.
-
-Command centers frequently suffer from fragmented legacy infrastructures. These information silos delay threat identification, cause unscheduled outages, and create massive security holes. I addressed these systemic issues by migrating to a **resilient, cloud-native microservices architecture** and automating the entire software delivery, security compliance, infrastructure management, and disaster recovery lifecycle using industry-standard DevOps tools.
-
-This repository contains the complete implementation—including the functional React and Node.js microservices codebase, the Docker configurations, the Jenkins CI/CD pipeline, the Terraform Infrastructure as Code (IaC) modules, and the Kubernetes orchestration manifests.
 
 ---
-
-## 🛠️ Technology Stack & DevOps Lifecycle
-
-The platform demonstrates how advanced cloud-native and DevOps tools automate the deployment, scaling, monitoring, recovery, and security of a functional business application.
-
-| Phase | Tool | Implementation Detail |
-|---|---|---|
-| **Frontend UI** | React 19 + Vite 6 | Military-themed Common Operating Picture (COP) with Leaflet.js maps, milsymbol tactical markers (MIL-STD-2525), and live WebSocket telemetry dashboards. Styled with Tailwind CSS v4. |
-| **Microservices** | Node.js + Express | 4 logically isolated microservices: Auth, Command (Asset/Telemetry), Threat (Detection/Alerts), and Mission (Directives/State-machine). |
-| **Database** | PostgreSQL 18 | Prisma ORM mapping schemas dynamically. Isolated schemas per service (`auth`, `command`, `threat`, `mission`) on a single database cluster. |
-| **Containerization** | Docker & Docker Compose | Multi-stage, non-root, cache-optimized `Dockerfile` for each microservice and the frontend. Orchestrated locally with 13 containers. |
-| **CI/CD Pipeline** | Jenkins (LTS) | Declarative `Jenkinsfile` executing linting, multi-container Docker compilation, registry uploads (AWS ECR), rolling cluster updates (EKS), and post-deployment validation. |
-| **Infrastructure as Code** | Terraform | Modular scripts configuring AWS VPC, EKS cluster, EC2 Jenkins worker node, RDS multi-AZ databases, ECR container registries, and S3 secure backups. |
-| **Orchestration** | Amazon EKS (K8s v1.36) | Production-grade deployment manifests configuring Pods, LoadBalancer Services, Nginx Ingress routing, and Horizontal Pod Autoscalers (HPA). |
-| **Metrics & Monitoring** | Prometheus & Grafana | Custom metrics scraped on `/metrics` from all services. Grafana dashboard visualizing resource consumption, query latency, and operational health. |
-| **Centralized Logging** | ELK Stack | Winston JSON console loggers forwarding to Logstash TCP inputs, indexed in Elasticsearch, and visualizable on Kibana dashboard. |
-| **Secret Management** | HashiCorp Vault | AppRole role-based secret access. Dynamic retrieval of database credentials and JWT signing keys on container startup. |
-| **Disaster Recovery** | DR Plan & Automation | RTO < 15 Min, RPO < 5 Min. Active-passive failover and automated S3 backup synchronization. |
-
----
-
-## 📂 Project Directory Structure
-
-```
-QuantumDefence/
-├── services/
-│   ├── auth-service/        # Node.js + Express (Port 4001) - JWT authentication & audits
-│   ├── command-service/     # Node.js + WebSockets (Port 4002) - Telemetry & asset simulation
-│   ├── threat-service/      # Node.js + WebSockets (Port 4003) - Detection & live alerts
-│   └── mission-service/     # Node.js + Express (Port 4004) - Directives state machine
-├── frontend/                # React 19 + Vite 6 Single-Page Application (Tailwind CSS v4)
-├── gateway/                 # Nginx API Gateway routing and WebSocket proxies
-├── docker/                  # Local Docker Compose multi-container templates
-├── terraform/               # Infrastructure provisioning modules (AWS VPC, EKS, RDS, ECR)
-├── kubernetes/              # Production manifests (Deployments, Ingress, HPA, ConfigMaps)
-├── monitoring/              # Prometheus scrapers, alert rules, and Grafana datasources
-├── logging/                 # ELK Logstash pipelines and configurations
-├── vault/                   # HashiCorp Vault access policies and init scripts
-├── docs/                    # Extensive project documentation & screenshots
-└── scripts/                 # Provisioning, seeding, and cleanup scripts
-```
-
----
-
-## 🎯 Product Requirements & Vision
-
-### 1. Unified COP
-I integrated data feeds from five domains into a single interactive tactical map with latency under 1 second.
-
-### 2. Automated Threat Assessment
-I built threat classification logic that automatically analyzes sensor inputs and classifies threat severity (Critical, High, Medium, Low) within 500 milliseconds of detection.
-
-### 3. High Availability
-I achieved a resilient ecosystem using containerized replication, load balancing, and Kubernetes self-healing.
-
-### 4. Zero-Trust Security
-I ensured all microservice communication is authenticated, and configuration secrets are retrieved dynamically at runtime from HashiCorp Vault.
-
----
-
 ## 🏗️ Architectural Trade-offs & Engineering Decisions
 
 I made several critical architectural trade-offs during the implementation of the platform:
@@ -268,6 +219,8 @@ I made several critical architectural trade-offs during the implementation of th
 
 ---
 
+
+---
 ## 🛑 Core Technical Challenges & Resolutions
 
 During the implementation and testing phases, I encountered and resolved several complex bugs:
@@ -294,6 +247,8 @@ During the implementation and testing phases, I encountered and resolved several
 
 ---
 
+
+---
 ## 📐 System Design & Diagrams
 
 ### 1. System Context Diagram (C4 Context)
@@ -420,6 +375,8 @@ sequenceDiagram
 
 ---
 
+
+---
 ## 5. Technical Details & Configuration
 
 ### 5.1. Authentication Service
@@ -597,6 +554,8 @@ Below is the configuration checklist required in `.env` configuration files:
 
 ---
 
+
+---
 ## 🚀 End-to-End Operational Manual (Command Reference)
 
 I have documented each command and script execution below to guide developers and system operators through the deployment and teardown lifecycles.
@@ -717,6 +676,8 @@ kill $PID
 
 ---
 
+
+---
 ## 🛡️ Disaster Recovery (DR) Plan
 
 I established a complete Disaster Recovery plan to ensure military operational continuity:
@@ -757,6 +718,8 @@ This executes the following steps:
 
 ---
 
+
+---
 ## 🖼️ Demonstration Screenshots
 
 Demonstration screenshots are located in `docs/screenshots/`.
@@ -768,10 +731,11 @@ Demonstration screenshots are located in `docs/screenshots/`.
 5. **[Asset Telemetry & Readiness](docs/screenshots/assets_status.png)**: Tracks readiness, coordinates, and fuel levels of deployment assets.
 6. **[Alert & Notification Stream](docs/screenshots/alerts_status.png)**: Broadcasts real-time security threats and system log events via Socket.IO.
 7. **[Vault Administration](docs/screenshots/vault_secret_config.png)**: Demonstrates secret storage and credentials protection.
-8. **[Jenkins CI/CD Pipeline Run](docs/screenshots/jenkins_pipeline_run.png)**: Illustrates the successful build and deploy pipeline stages.
-9. **[Grafana Metrics Monitoring](docs/screenshots/grafana_alerts.png)**: Details container memory, CPU utilization, and HTTP request throughput.
-10. **[Kibana Logging Query](docs/screenshots/elk_kibana_logs.png)**: Queries structured JSON logs from microservices.
-11. **[AWS Production Architecture](docs/screenshots/aws_architecture.png)**: Visualizes the cloud infrastructure, VPC layout, EKS cluster, ECR registries, RDS PostgreSQL database, S3 backups, and CloudWatch integration.
+8. **[Jenkins CI/CD Pipeline Running](docs/screenshots/jenkins-pipeline-running.png)**: Illustrates the Jenkins pipeline execution in progress.
+9. **[Jenkins CI/CD Pipeline Success](docs/screenshots/jenkins_pipeline_run.png)**: Illustrates the successful build and deploy pipeline stages.
+10. **[Grafana Metrics Monitoring](docs/screenshots/grafana_alerts.png)**: Details container memory, CPU utilization, and HTTP request throughput.
+11. **[Kibana Logging Query](docs/screenshots/elk_kibana_logs.png)**: Queries structured JSON logs from microservices.
+12. **[AWS Production Architecture](docs/screenshots/aws_architecture.png)**: Visualizes the cloud infrastructure, VPC layout, EKS cluster, ECR registries, RDS PostgreSQL database, S3 backups, and CloudWatch integration.
 
 ### 1. Secure Login Interface
 ![Secure Login Interface](docs/screenshots/login_page.png)
@@ -794,20 +758,25 @@ Demonstration screenshots are located in `docs/screenshots/`.
 ### 7. Vault Administration
 ![Vault Administration](docs/screenshots/vault_secret_config.png)
 
-### 8. Jenkins CI/CD Pipeline Run
-![Jenkins CI/CD Pipeline Run](docs/screenshots/jenkins_pipeline_run.png)
+### 8. Jenkins CI/CD Pipeline Running
+![Jenkins CI/CD Pipeline Running](docs/screenshots/jenkins-pipeline-running.png)
 
-### 9. Grafana Metrics Monitoring
+### 9. Jenkins CI/CD Pipeline Success
+![Jenkins CI/CD Pipeline Success](docs/screenshots/jenkins_pipeline_run.png)
+
+### 10. Grafana Metrics Monitoring
 ![Grafana Metrics Monitoring](docs/screenshots/grafana_alerts.png)
 
-### 10. Kibana Logging Query
+### 11. Kibana Logging Query
 ![Kibana Logging Query](docs/screenshots/elk_kibana_logs.png)
 
-### 11. AWS Production Architecture
+### 12. AWS Production Architecture
 ![AWS Production Architecture](docs/screenshots/aws_architecture.png)
 
 ---
 
+
+---
 ## 📜 Complete Scripts Reference & Workflow Documentation
 
 ### Local Development Scripts
@@ -1024,6 +993,8 @@ secret/
 
 ---
 
+
+---
 ## 🏗️ Jenkins CI/CD Pipeline Documentation
 
 ### Jenkins Architecture
@@ -1153,3 +1124,14 @@ Copy `scripts/secrets.env.example` to `scripts/secrets.env` and fill in:
 | `mission-deployment.yaml` | `kubernetes/app/` | Mission service Deployment + Service (2 replicas) |
 | `frontend-deployment.yaml` | `kubernetes/app/` | React frontend Deployment (2 replicas) |
 | `monitoring-ingress.yaml` | `monitoring/` | Grafana/Prometheus route paths |
+
+---
+## 🔮 Future Improvements
+
+While Project QuantumDefense represents a fully functional C2 platform, the following engineering enhancements are planned:
+
+1. **Vault Dynamic Database Credentials**: Configure Vault to generate dynamic, short-lived PostgreSQL credentials that automatically expire and rotate every 15 minutes, rather than relying on static passwords.
+2. **Distributed Tracing (OpenTelemetry)**: Integrate OpenTelemetry SDKs into the microservices to trace requests across the API Gateway, Auth Service, and Command Service, helping locate performance bottlenecks.
+3. **Active-Active Multi-Region Database**: Transition from active-passive cross-region backup to a true active-active multi-region deployment using Amazon Aurora Global Database to achieve RTO/RPO near zero.
+4. **Distroless Container Hardening**: Swap the microservices' base Alpine Docker images for Google’s `distroless` images to remove package managers, shells, and minimize the container attack surface.
+5. **Helm Chart Integration**: Consolidate local Kubernetes manifests into custom Helm charts to make deployment configuration parameters easily customizable across environments.
